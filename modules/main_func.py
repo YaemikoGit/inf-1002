@@ -4,7 +4,7 @@ from tkinter import filedialog
 
 from PyQt5.QtWidgets import QApplication, QTableView
 from PyQt5.QtCore import QAbstractTableModel, Qt
-
+from PyQt5 import QtCore
 def data_import():
     filepath = filedialog.askopenfilename(title="Open a Text File", filetypes=(("all files", "*.*"), ("text    files", "*.txt")))
     file = open(filepath, encoding="utf8")
@@ -12,26 +12,59 @@ def data_import():
     return pd.read_csv(file)
 
 
-class pandasModel(QAbstractTableModel):
+class PandasModel(QtCore.QAbstractTableModel):
+    def __init__(self, df = pd.DataFrame(), parent=None):
+        QtCore.QAbstractTableModel.__init__(self, parent=parent)
+        self._df = df
 
-    def __init__(self, data):
-        QAbstractTableModel.__init__(self)
-        self._data = data
+    def headerData(self, section, orientation, role=QtCore.Qt.DisplayRole):
+        if role != QtCore.Qt.DisplayRole:
+            return QtCore.QVariant()
 
-    def rowCount(self, parent=None):
-        return self._data.shape[0]
+        if orientation == QtCore.Qt.Horizontal:
+            try:
+                return self._df.columns.tolist()[section]
+            except (IndexError, ):
+                return QtCore.QVariant()
+        elif orientation == QtCore.Qt.Vertical:
+            try:
+                # return self.df.index.tolist()
+                return self._df.index.tolist()[section]
+            except (IndexError, ):
+                return QtCore.QVariant()
 
-    def columnCount(self, parnet=None):
-        return self._data.shape[1]
+    def data(self, index, role=QtCore.Qt.DisplayRole):
+        if role != QtCore.Qt.DisplayRole:
+            return QtCore.QVariant()
 
-    def data(self, index, role=Qt.DisplayRole):
-        if index.isValid():
-            if role == Qt.DisplayRole:
-                return str(self._data.iloc[index.row(), index.column()])
-        return None
+        if not index.isValid():
+            return QtCore.QVariant()
 
-    def headerData(self, col, orientation, role):
-        if orientation == Qt.Horizontal and role == Qt.DisplayRole:
-            return self._data.columns[col]
-        return None
+        return QtCore.QVariant(str(self._df.iloc[index.row(), index.column()]))
 
+    def setData(self, index, value, role):
+        row = self._df.index[index.row()]
+        col = self._df.columns[index.column()]
+        if hasattr(value, 'toPyObject'):
+            # PyQt4 gets a QVariant
+            value = value.toPyObject()
+        else:
+            # PySide gets an unicode
+            dtype = self._df[col].dtype
+            if dtype != object:
+                value = None if value == '' else dtype.type(value)
+        self._df.set_value(row, col, value)
+        return True
+
+    def rowCount(self, parent=QtCore.QModelIndex()):
+        return len(self._df.index)
+
+    def columnCount(self, parent=QtCore.QModelIndex()):
+        return len(self._df.columns)
+
+    def sort(self, column, order):
+        colname = self._df.columns.tolist()[column]
+        self.layoutAboutToBeChanged.emit()
+        self._df.sort_values(colname, ascending= order == QtCore.Qt.AscendingOrder, inplace=True)
+        self._df.reset_index(inplace=True, drop=True)
+        self.layoutChanged.emit()

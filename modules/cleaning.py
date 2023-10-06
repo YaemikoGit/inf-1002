@@ -47,26 +47,30 @@ def clean(data):
 
     data.drop(to_drop, inplace=True, axis=1)
 
+    # gender column
+    spellForFemale = ['f', 'F', 'woman', 'female', 'femail', 'Cisgender Female', 'fem', 'cis female',
+                      'Female (props for making this a freeform field, though)',
+                      'Female assigned at birth ', 'Female or Multi-Gender Femme', 'female/woman', 'fm', 'Cis-woman',
+                      'I identify as female.', 'female ', 'Woman']
+
+    spellForMale = ['Cis male', 'Cis Male', 'cisdude', 'Dude', 'man', 'M', 'm', 'M|', 'mail', 'Male (cis)', 'MALE',
+                    'Male.', 'Malr', 'Sex is male', 'male', 'Male ']
+
+    spellOthers = ['AFAB', 'Agender', 'Androgynous', 'Bigender', 'Enby', 'female-bodied; no feelings about gender',
+                   'Fluid', 'GenderFluid', 'Genderfluid (born female)'
+                                           'Genderflux demi-girl', 'genderqueer', 'Genderqueer', 'Male (trans, FtM)',
+                   'male 9:1 female, roughly', 'Male/genderqueer', 'mtf'
+                                                                   'nb masculine', 'Nonbinary', 'non-binary', 'Other',
+                   'Other/Transfeminine', 'Queer', 'Transgender woman', 'Transitioned, M2F', 'Unicorn']
+
+    data.loc[0:, 'What is your gender?'].replace(spellForFemale, 'Female', inplace=True)
+    data.loc[0:, 'What is your gender?'].replace(spellForMale, 'Male', inplace=True)
+    data.loc[0:, 'What is your gender?'].replace(spellOthers, 'Transgender', inplace=True)
+
 
 #df.head()
 
-#gender column
-# spellForFemale = ['f', 'F', 'woman', 'female', 'femail', 'Cisgender Female', 'fem', 'cis female', 'Female (props for making this a freeform field, though)',
-#                   'Female assigned at birth ', 'Female or Multi-Gender Femme', 'female/woman', 'fm', 'Cis-woman', 'I identify as female.', 'female ', 'Woman']
-#
-#
-#
-# spellForMale = ['Cis male', 'Cis Male', 'cisdude', 'Dude', 'man', 'M', 'm', 'M|', 'mail', 'Male (cis)','MALE', 'Male.', 'Malr', 'Sex is male', 'male', 'Male ']
-#
-#
-#
-# spellOthers = ['AFAB', 'Agender', 'Androgynous', 'Bigender', 'Enby', 'female-bodied; no feelings about gender', 'Fluid', 'GenderFluid', 'Genderfluid (born female)'
-#               'Genderflux demi-girl', 'genderqueer', 'Genderqueer', 'Male (trans, FtM)', 'male 9:1 female, roughly', 'Male/genderqueer', 'mtf'
-#               'nb masculine', 'Nonbinary', 'non-binary', 'Other', 'Other/Transfeminine', 'Queer', 'Transgender woman', 'Transitioned, M2F', 'Unicorn']
-#
-# df.loc[0:, 'What is your gender?'].replace(spellForFemale, 'Female', inplace=True)
-# df.loc[0:, 'What is your gender?'].replace(spellForMale, 'Male', inplace=True)
-# df.loc[0:, 'What is your gender?'].replace(spellOthers, 'Transgender', inplace=True)
+
 #
 # #age column
 #

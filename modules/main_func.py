@@ -1,10 +1,9 @@
 
 import pandas as pd
 from tkinter import filedialog
-
-from PyQt5.QtWidgets import QApplication, QTableView
-from PyQt5.QtCore import QAbstractTableModel, Qt
 from PyQt5 import QtCore
+
+
 def data_import():
     filepath = filedialog.askopenfilename(title="Open a Text File", filetypes=(("all files", "*.*"), ("text    files", "*.txt")))
     file = open(filepath, encoding="utf8")
@@ -68,3 +67,6 @@ class PandasModel(QtCore.QAbstractTableModel):
         self._df.sort_values(colname, ascending= order == QtCore.Qt.AscendingOrder, inplace=True)
         self._df.reset_index(inplace=True, drop=True)
         self.layoutChanged.emit()
+
+
+

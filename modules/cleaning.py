@@ -68,17 +68,11 @@ def clean(data):
     data.loc[0:, 'What is your gender?'].replace(spellOthers, 'Transgender', inplace=True)
 
 
+
 #df.head()
 
 
-#
-# #age column
-#
-# # conditionally delete rows where age is less than 17
-# df = df.drop(df[df['What is your age?'] < 17].index)
-#
-# # conditionally delete rows where age is greater than 50
-# df = df.drop(df[df['What is your age?'] > 50].index)
+
 #
 # #Column B - remove the rows that has dates
 #

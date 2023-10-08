@@ -1,14 +1,10 @@
-import matplotlib.pyplot as plt
+
 import pandas as pd
 import warnings
 warnings.filterwarnings('ignore')
 
 import sys
 from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtWidgets import QMainWindow, QLabel, QGridLayout, QWidget
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
-import seaborn as sns
 
 from modules import cleaning
 from modules import main_func
@@ -52,11 +48,30 @@ class Widget(QtWidgets.QWidget):
         self.displayBtn3.clicked.connect(self.displayGraph3)
 
 
+
+        # AGE
+        # dropdown for selected graph for age group
+        self.dropdownAge = QtWidgets.QComboBox()
+        self.dropdownAge.addItems(["Bar graph", "Pie chart"])
+        vLayout.addWidget(self.dropdownAge)
+
         # age group
-        self.displayBtn4 = QtWidgets.QPushButton("Display 4th", self)
-        hLayout.addWidget(self.displayBtn4)
+        self.displayBtn4 = QtWidgets.QPushButton("Display Age group chart", self)
+        vLayout.addWidget(self.displayBtn4)
         self.displayBtn4.clicked.connect(self.displayGraph4)
 
+
+
+        # GENDER
+        # dropdown for selected graph for gender
+        self.dropdownGen = QtWidgets.QComboBox()
+        self.dropdownGen.addItems(["Bar graph", "Pie chart"])
+        vLayout.addWidget(self.dropdownGen)
+
+        # gender
+        self.displayBtn5 = QtWidgets.QPushButton("age group", self)
+        vLayout.addWidget(self.displayBtn5)
+        self.displayBtn5.clicked.connect(self.displayGraph5)
 
 
         # table that displays the data
@@ -93,9 +108,17 @@ class Widget(QtWidgets.QWidget):
     def displayGraph4(self):
         df = pd.read_csv('data/mental-heath.csv')
         cleaning.clean(df)
-        print('ok')         #cleaning no issue
-        graphs.ageGroup(df) #issue in function
-        print('ok2')
+        content = self.dropdownAge.currentText()
+        graphs.ageGroup(df, content)
+
+    def displayGraph5(self):
+        df = pd.read_csv('data/mental-heath.csv')
+        cleaning.clean(df)
+        content = self.dropdownGen.currentText()
+        graphs.gender(df, content)
+
+
+
 
 
 if __name__ == "__main__":

@@ -189,11 +189,54 @@ def plot_barchart(x_label, diagnosed_response, not_diagnosed_response, cat):
         plt.show()
 
 
+# function to plot pie chart
+def plot_piechart(x_label,diagnosed_response,not_diagnosed_response,cat):
+  labels = ['Yes','No']
+  colors=['#7eb54e','#D21F3C']
+  #number of columns for the piechart
+  num_columns = 2
+  #number of rows for piechart
+  num_rows =(len(x_label)+1)//2
+
+  # subplots with the specified number of rows and columns
+  fig, axs = plt.subplots(num_rows, num_columns, figsize=(12, 12))
+
+  # Plotting one piechart for each of the age group specified
+  for i in range(len(x_label)):
+      row = i // num_columns
+      col = i % num_columns
+      #defining which row and column to display the chart
+      ax = axs[row][col]
+      ax.pie([diagnosed_response[i],not_diagnosed_response[i]], labels=labels, autopct='%1.1f%%', colors=colors,startangle=90)
+      if cat=='age group':
+        title_text=('Number of Participant of age %s with diagnosed \nmental health disorder'%x_label[i])
+      elif cat=='gender':
+        title_text='Number of %s participant with diagnosed \n mental health disorder'%x_label[i]
+      elif cat=='family background':
+        if x_label[i]=='Yes':
+          title_text= 'Number of participant with family history that are diagnosed \n with mental health disorder'
+      elif x_label[i]=='No':
+          title_text= 'Number of participant without family history that are diagnosed \n with mental health disorder'
+      else:
+          title_text= 'Number of participant with unknown family history that are diagnosed \n with mental health disorder'
+
+      ax.set_title(title_text)
+
+  #if number of graph is not even
+  if(len(x_label)%2!=0):
+    #removing the last empty plot
+    fig.delaxes(axs[num_rows-1][1])
+
+  plt.tight_layout()
+
+  plt.show()
+
+
 
 # What age groups are more prone to mental health issues?
-def ageGroup(data):
+def ageGroup(data, type):
 
-    # define age group
+    # # define age group
     age_group_1 = '18-22'
     age_group_2 = '23-27'
     age_group_3 = '28-32'
@@ -202,12 +245,12 @@ def ageGroup(data):
     age_group_6 = '43-47'
     age_group_7 = '47+'
 
-    data['age_group'] = pd.cut(data['What is your age?'], bins=[18, 22, 27, 32, 37, 42, 47, 50],
+    data['What is your age?'] = pd.cut(data['What is your age?'], bins=[18, 22, 27, 32, 37, 42, 47, 50],
                              labels=[age_group_1, age_group_2, age_group_3, age_group_4, age_group_5, age_group_6,
                                      age_group_7])
 
     # variable to store age_group
-    age_group = data['age_group']
+    age_group = data['What is your age?']
     # variable to store response from participants on whether they had been diagnosed with a mental health disorder
     is_diagnosed = data['Have you been diagnosed with a mental health condition by a medical professional?']
 
@@ -232,92 +275,23 @@ def ageGroup(data):
 
     age_group_list = [age_group_1, age_group_2, age_group_3, age_group_4, age_group_5, age_group_6, age_group_7]
 
-    print('ok')
-    # if (cat == 'age group'):
-    title_str = 'age group'
-    x_text = 'Age group'
 
-    print('ok')
-    # elif (cat == 'gender'):
-    #     title_str = 'gender'
-    #     x_text = 'Gender'
-    # else:
-    #     title_str = 'family background'
-    #     x_text = 'Family Background'
-    # Create an array of x positions for the bars
-    x = np.arange(len(age_group_list))
-    width = 0.4
-    # The first bar for each age group for the participants who have been diagnosed with mental health disorder
-    bar1 = plt.bar(x - width / 2, yes_responses, width, label='Yes', color='#7eb54e')
-    # The second for each age group for the the participant who have not been diagnosed with mental health disorder
-    bar2 = plt.bar(x + width / 2, no_responses, width, label='No', color='#D21F3C')
-    # Add labels and a title
-    plt.xlabel(x_text)
-    plt.ylabel('Number of responses')
-    plt.title('Number of Participant with diagnosed mental health disorder of different %s' % title_str)
-    # Add label
-    plt.bar_label(bar1, labels=yes_responses, label_type='edge', fontsize=10, color='black')
-    plt.bar_label(bar2, labels=no_responses, label_type='edge', fontsize=10, color='black')
-    # Set x-axis labels
-    plt.xticks(x, age_group_list)
-
-    # Add a legend
-    plt.legend()
-
-    # Show the plot
-    plt.show()
-
-    # function to plot bar chart
-    # def plot_piechart(x_label, diagnosed_response, not_diagnosed_response, cat):
-    #     labels = ['Yes', 'No']
-    #     colors = ['#7eb54e', '#D21F3C']
-    #     # number of columns for the piechart
-    #     num_columns = 2
-    #     # number of rows for piechart
-    #     num_rows = (len(x_label) + 1) // 2
-    #
-    #     # subplots with the specified number of rows and columns
-    #     fig, axs = plt.subplots(num_rows, num_columns, figsize=(12, 12))
-    #
-    #     # Plotting one piechart for each of the age group specified
-    #     for i in range(len(x_label)):
-    #         row = i // num_columns
-    #         col = i % num_columns
-    #         # defining which row and column to display the chart
-    #         ax = axs[row][col]
-    #         ax.pie([diagnosed_response[i], not_diagnosed_response[i]], labels=labels, autopct='%1.1f%%', colors=colors,
-    #                startangle=90)
-    #         if cat == 'age group':
-    #             title_text = ('Number of Participant of age %s with diagnosed \nmental health disorder' % x_label[i])
-    #         elif cat == 'gender':
-    #             title_text = 'Number of %s participant with diagnosed \n mental health disorder' % x_label[i]
-    #         elif cat == 'family background':
-    #             if x_label[i] == 'Yes':
-    #                 title_text = 'Number of participant with family history that are diagnosed \n with mental health disorder'
-    #         elif x_label[i] == 'No':
-    #             title_text = 'Number of participant without family history that are diagnosed \n with mental health disorder'
-    #         else:
-    #             title_text = 'Number of participant with unknown family history that are diagnosed \n with mental health disorder'
-    #
-    #         ax.set_title(title_text)
-    #
-    #     # if number of graph is not even
-    #     if (len(x_label) % 2 != 0):
-    #         # removing the last empty plot
-    #         fig.delaxes(axs[num_rows - 1][1])
-    #
-    #     plt.tight_layout()
+    #Select which graph to be output based on dropdown
+    if type == 'Bar graph':
+        plot_barchart(age_group_list, yes_responses, no_responses, 'age group')
+    else:
+        plot_piechart(age_group_list, yes_responses, no_responses, 'age group')
 
 
 
+# Which gender are more prone to mental health issues?
+def gender(data, type):
 
-    # plot_piechart(age_group_list, yes_responses, no_responses, 'age group')
-    # plt.show()
+    data['What is your gender?'].unique()
 
-
-def gender(data):
-    print('error1')
     gender_df = data['What is your gender?']
+
+    print('ok')
 
     is_diagnosed = data['Have you been diagnosed with a mental health condition by a medical professional?']
     # classfying responses according to gender
@@ -329,11 +303,15 @@ def gender(data):
     diagnosed_trans = data[(gender_df == "Transgender") & (is_diagnosed == 'Yes')].count()[0]
     not_diagnosed_trans = data[(gender_df == "Transgender") & (is_diagnosed == 'No')].count()[0]
 
-
     # the list is stored in a pattern of male, female, transgender, this follows df.unique of this particular df
     diagnosed_gender_group = [diagnosed_male, diagnosed_female, diagnosed_trans]
     not_diagnosed_gender_group = [not_diagnosed_male, not_diagnosed_female, not_diagnosed_trans]
 
-    df_gender = data['What is your gender?'].unique()
+    df_gender = ['Male', 'Female', 'Transgender']
 
+    # Select which graph to be output based on dropdown
+    if type == 'Bar graph':
+        plot_barchart(df_gender,diagnosed_gender_group,not_diagnosed_gender_group,'gender')
+    else:
+        plot_piechart(df_gender,diagnosed_gender_group,not_diagnosed_gender_group,'gender')
 

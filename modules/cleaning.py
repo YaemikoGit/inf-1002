@@ -51,7 +51,7 @@ def clean(data):
     spellForFemale = ['f', 'F', 'woman', 'female', 'femail', 'Cisgender Female', 'fem', 'cis female',
                       'Female (props for making this a freeform field, though)',
                       'Female assigned at birth ', 'Female or Multi-Gender Femme', 'female/woman', 'fm', 'Cis-woman',
-                      'I identify as female.', 'female ', 'Woman']
+                      'I identify as female.', 'female ', 'Woman', 'Female ']
 
     spellForMale = ['Cis male', 'Cis Male', 'cisdude', 'Dude', 'man', 'M', 'm', 'M|', 'mail', 'Male (cis)', 'MALE',
                     'Male.', 'Malr', 'Sex is male', 'male', 'Male ']
@@ -69,36 +69,4 @@ def clean(data):
 
 
 
-#df.head()
 
-
-
-#
-# #Column B - remove the rows that has dates
-#
-# #dates = ['Jun-25', '1-May']
-#
-# df = df[df['How many employees does your company or organization have?'].str.contains("Jun-25") == False]
-# df = df[df['How many employees does your company or organization have?'].str.contains("1-May") == False]
-#
-# #NOT USING
-# #Removing rows that are value 1 (self employed if analyzing only non-self employed)
-# df = df.drop(df[df['Are you self-employed?'] == 1].index)
-#
-# #Column S, U, R
-#
-# #For column AZ
-#
-#
-# #provide timely measures
-# #Do you know local or online resources to seek help for a mental health disorder?(self employed flag = 1)
-# #Did your previous employers provide resources to learn more about mental health issues and how to seek help? (previous employer flag)
-# #Were you aware of the options for mental health care provided by your previous employers? (previous employer flag)
-#
-# numbers = []
-# info = []
-# for x in range(len(df['Do you know local or online resources to seek help for a mental health disorder?'])):
-#   if df['Are you self-employed?'].all() == '1':
-#     info.apped(df['Do you know local or online resources to seek help for a mental health disorder?'].value_count())
-#
-# #df.print(info)

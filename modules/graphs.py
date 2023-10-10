@@ -10,163 +10,7 @@ from math import exp
 from sklearn.linear_model import LogisticRegression
 
 
-# Bar graph on “How does mental health affect work performance?”
-def workPer(data):
-
-    # Respondents of those that feel mental health affects their productivity at work
-    data['Do you believe your productivity is ever affected by a mental health issue?'].unique()
-
-
-    ax = sns.countplot(x=data['Do you believe your productivity is ever affected by a mental health issue?'],
-                       order=['Yes', 'Not applicable to me', 'No', 'Unsure'],
-                       palette='Blues')
-    ax.bar_label(ax.containers[0])
-    plt.title('Mental health condition interfere with productivity?', fontsize=14, fontweight='bold')
-    plt.xticks(fontsize=12)
-    plt.yticks(fontsize=12)
-    plt.legend(fontsize=12)
-
-    plt.show()
-
-
-# TO BE EDITTED - Graph should be output to popup window like other egs
-def workAffected(data):
-    mylabels = []
-    string_search = 'If yes, what percentage of your work time (time performing primary or secondary job functions) is affected by a mental health issue?'
-    num_arr = []
-    for x in range(len(data[string_search].value_counts())):
-        num_arr.append(data[string_search].value_counts()[x])
-        mylabels.append(data[string_search].value_counts().index[x])
-
-    data_arr = []
-
-    # Combine data extracted from mylabels and num_arr into a new array
-    for i in range(0, len(mylabels)):
-        data_arr.append([mylabels[i], num_arr[i]])
-
-    wrkProd_percentage_df = pd.DataFrame(data_arr, columns=['Percentage', 'Count'])
-
-    # Creating autocpt arguments
-    def func(pct, allvalues):
-        absolute = int(pct / 100.*np.sum(allvalues))
-        return "{:.1f}%\n{:d}".format(pct, absolute)
-
-    print(num_arr)
-    fig, ax = plt.subplots(figsize =(10, 7))
-    wedges, texts,autotexts = ax.pie(num_arr,
-                                      labels = mylabels,
-                                      autopct = lambda pct: func(pct, num_arr),
-                                      shadow = False,
-                                      startangle = 90,
-                                      textprops = dict(color ="black"))
-
-    # Legend
-    ax.legend(wedges, mylabels,
-              title ="Percentage of Time affected",
-              loc ="center left",
-              bbox_to_anchor =(1, 0, 0.5, 1))
-
-    plt.setp(texts, size = 12, weight ="bold")
-    ax.set_title("Work Time affected by mental health")
-
-    # show plot
-    plt.show()
-
-
-# What are the common mental health combination in the dataset?
-def conditions(data):
-    # Amount of people diagnosed with mental health
-    yes_condition = \
-    data["Have you been diagnosed with a mental health condition by a medical professional?"].value_counts()[1]
-    data["Have you been diagnosed with a mental health condition by a medical professional?"].value_counts()
-
-    # Make a list containing the no. of such "conditions", and the type of "conditions"
-    numbers = []
-    conditions = []
-    for x in range(len(data['If so, what condition(s) were you diagnosed with?'].value_counts())):
-        if data['If so, what condition(s) were you diagnosed with?'].value_counts()[x] >= 10:
-            numbers.append(data['If so, what condition(s) were you diagnosed with?'].value_counts()[x])
-            conditions.append(data['If so, what condition(s) were you diagnosed with?'].value_counts().index[x])
-
-    # Remove brackets (formatting)
-    for x in range(len(conditions)):
-        for condition_no in conditions[x].split("|"):
-            if conditions[x].find("("):
-                start = conditions[x].find("(")
-                end = conditions[x].find(")")
-                take_out = conditions[x][start - 1: end + 1]
-                to_replace = conditions[x].replace(take_out, "")
-                conditions[x] = to_replace
-
-    others = yes_condition
-    # For the "Other" values which were put aside
-    for number in numbers:
-        others -= number
-
-    numbers.append(others)
-    conditions.append("Others")
-
-    colors = ['yellowgreen', 'red', 'gold', 'lightskyblue', 'lime', 'lightcoral', 'blue', 'pink', 'darkgreen', 'yellow',
-              'grey', 'violet', 'magenta', 'cyan']
-    print(numbers)
-
-    # Percentage of numbers
-    percent = [(x / yes_condition) * 100 for x in numbers]
-
-    # Formatting labels to show in Legend
-    labels = ['{0} - {1:1.2f} %'.format(i, j) for i, j in zip(conditions, percent)]
-
-    patches, texts = plt.pie(numbers, colors=colors, startangle=90, radius=1.2)
-    plt.legend(patches, labels, loc='center right', bbox_to_anchor=(0.1, 1.), fontsize=8)
-    plt.show()
-
-
-
-# Examine Correlation between Employer taking mental health serious vs productivity
-def heatmap(data):
-    yAxis = "Do you feel that your employer takes mental health as seriously as physical health?"
-    xAxis = "Do you believe your productivity is ever affected by a mental health issue?"
-
-    cat_yAxis = data[yAxis].astype('category').cat.codes
-    # d_cat_yAxis = dict(enumerate(cat_yAxis.cat.categories))
-
-    cat_xAxis = data[xAxis].astype('category').cat.codes
-    # d_cat_xAxis = dict(enumerate(cat_xAxis.cat.categories))
-
-    col_listy = cat_yAxis.values.tolist()
-    col_listx = cat_xAxis.values.tolist()
-
-    for i in range(0, len(col_listy)):
-        if col_listy[i] == -1:
-            col_listy[i] = 0
-
-    for i in range(0, len(col_listx)):
-        if col_listx[i] == -1:
-            col_listx[i] = 1
-
-    # print(col_listy)
-    data = {'Employer taking mental health seriously': col_listy,
-            'Productivity affected by mental health': col_listx
-            }
-
-    my_df = pd.DataFrame(data)
-
-    corr_matrix = my_df.corr()
-
-    employer = 'Employer taking mental health seriously'
-    prod = 'Productivity affected by mental health'
-
-    # adds the title
-    plt.title('Examine Correlation between Employer taking mental health serious vs productivity')
-
-    new_df = my_df
-    new_df.apply(lambda x: x.factorize()[0]).corr()
-    sns.heatmap(pd.crosstab(new_df[employer], new_df[prod]))
-
-    plt.show()
-
-
-
+#Extra functions to be used for plotting
 #initialize an empty dictionary to store the percentage of diagnosed cases for different categories.
 diagnosed_percentage={}
 #function to calculate and append a dictionary of diagnosed percentage of population based on give categories
@@ -349,6 +193,168 @@ def remove_insignificant_labels(data,labels,dataframe,total):
     return new_label
 
 
+
+
+
+#graph plotting functions
+# Bar graph on “How does mental health affect work performance?”
+def workPer(data):
+
+
+    # Respondents of those that feel mental health affects their productivity at work
+    data['Do you believe your productivity is ever affected by a mental health issue?'].unique()
+
+
+    ax = sns.countplot(x=data['Do you believe your productivity is ever affected by a mental health issue?'],
+                       order=['Yes', 'Not applicable to me', 'No', 'Unsure'],
+                       palette='Blues')
+    ax.bar_label(ax.containers[0])
+    plt.title('Mental health condition interfere with productivity?', fontsize=14, fontweight='bold')
+    plt.xticks(fontsize=12)
+    plt.yticks(fontsize=12)
+
+    plt.show()
+
+
+# Work time affeceted
+def workAffected(data):
+    mylabels = []
+    string_search = 'If yes, what percentage of your work time (time performing primary or secondary job functions) is affected by a mental health issue?'
+    num_arr = []
+    for x in range(len(data[string_search].value_counts())):
+        num_arr.append(data[string_search].value_counts()[x])
+        mylabels.append(data[string_search].value_counts().index[x])
+
+    data_arr = []
+
+    # Combine data extracted from mylabels and num_arr into a new array
+    for i in range(0, len(mylabels)):
+        data_arr.append([mylabels[i], num_arr[i]])
+
+    wrkProd_percentage_df = pd.DataFrame(data_arr, columns=['Percentage', 'Count'])
+
+    # Creating autocpt arguments
+    def func(pct, allvalues):
+        absolute = int(pct / 100.*np.sum(allvalues))
+        return "{:.1f}%\n{:d}".format(pct, absolute)
+
+    #print(num_arr)
+    fig, ax = plt.subplots(figsize =(10, 7))
+    wedges, texts,autotexts = ax.pie(num_arr,
+                                      labels = mylabels,
+                                      autopct = lambda pct: func(pct, num_arr),
+                                      shadow = False,
+                                      startangle = 90,
+                                      textprops = dict(color ="black"))
+
+    # Legend
+    ax.legend(wedges, mylabels,
+              title ="Percentage of Time affected",
+              loc ="center left",
+              bbox_to_anchor =(1, 0, 0.5, 1))
+
+    plt.setp(texts, size = 12, weight ="bold")
+    ax.set_title("Work Time affected by mental health")
+
+    # show plot
+    plt.show()
+
+
+# What are the common mental health combination in the dataset?
+def conditions(data):
+    # Amount of people diagnosed with mental health
+    yes_condition = \
+    data["Have you been diagnosed with a mental health condition by a medical professional?"].value_counts()[1]
+    data["Have you been diagnosed with a mental health condition by a medical professional?"].value_counts()
+
+    # Make a list containing the no. of such "conditions", and the type of "conditions"
+    numbers = []
+    conditions = []
+    for x in range(len(data['If so, what condition(s) were you diagnosed with?'].value_counts())):
+        if data['If so, what condition(s) were you diagnosed with?'].value_counts()[x] >= 10:
+            numbers.append(data['If so, what condition(s) were you diagnosed with?'].value_counts()[x])
+            conditions.append(data['If so, what condition(s) were you diagnosed with?'].value_counts().index[x])
+
+    # Remove brackets (formatting)
+    for x in range(len(conditions)):
+        for condition_no in conditions[x].split("|"):
+            if conditions[x].find("("):
+                start = conditions[x].find("(")
+                end = conditions[x].find(")")
+                take_out = conditions[x][start - 1: end + 1]
+                to_replace = conditions[x].replace(take_out, "")
+                conditions[x] = to_replace
+
+    others = yes_condition
+    # For the "Other" values which were put aside
+    for number in numbers:
+        others -= number
+
+    numbers.append(others)
+    conditions.append("Others")
+
+    colors = ['yellowgreen', 'red', 'gold', 'lightskyblue', 'lime', 'lightcoral', 'blue', 'pink', 'darkgreen', 'yellow',
+              'grey', 'violet', 'magenta', 'cyan']
+    #print(numbers)
+
+    # Percentage of numbers
+    percent = [(x / yes_condition) * 100 for x in numbers]
+
+    # Formatting labels to show in Legend
+    labels = ['{0} - {1:1.2f} %'.format(i, j) for i, j in zip(conditions, percent)]
+
+    patches, texts = plt.pie(numbers, colors=colors, startangle=90, radius=1.2)
+    plt.legend(patches, labels, loc='center right', bbox_to_anchor=(0.1, 1.), fontsize=8)
+    plt.show()
+
+
+
+# Examine Correlation between Employer taking mental health serious vs productivity
+def heatmap(data):
+    yAxis = "Do you feel that your employer takes mental health as seriously as physical health?"
+    xAxis = "Do you believe your productivity is ever affected by a mental health issue?"
+
+    cat_yAxis = data[yAxis].astype('category').cat.codes
+    # d_cat_yAxis = dict(enumerate(cat_yAxis.cat.categories))
+
+    cat_xAxis = data[xAxis].astype('category').cat.codes
+    # d_cat_xAxis = dict(enumerate(cat_xAxis.cat.categories))
+
+    col_listy = cat_yAxis.values.tolist()
+    col_listx = cat_xAxis.values.tolist()
+
+    for i in range(0, len(col_listy)):
+        if col_listy[i] == -1:
+            col_listy[i] = 0
+
+    for i in range(0, len(col_listx)):
+        if col_listx[i] == -1:
+            col_listx[i] = 1
+
+    # print(col_listy)
+    data = {'Employer taking mental health seriously': col_listy,
+            'Productivity affected by mental health': col_listx
+            }
+
+    my_df = pd.DataFrame(data)
+
+    corr_matrix = my_df.corr()
+
+    employer = 'Employer taking mental health seriously'
+    prod = 'Productivity affected by mental health'
+
+    # adds the title
+    plt.title('Examine Correlation between Employer taking mental health serious vs productivity')
+
+    new_df = my_df
+    new_df.apply(lambda x: x.factorize()[0]).corr()
+    sns.heatmap(pd.crosstab(new_df[employer], new_df[prod]))
+
+    plt.show()
+
+
+
+
 # What groups are more prone to mental health issues?
 # a) Age
 def ageGroup(data, type):
@@ -396,14 +402,18 @@ def ageGroup(data, type):
     age_group_list = [age_group_1, age_group_2, age_group_3, age_group_4, age_group_5, age_group_6, age_group_7]
 
 
-    #Select which graph to be output based on dropdown
+    # #Select which graph to be output based on dropdown
     if type == 'Bar graph':
         plot_barchart(age_group_list, diagnosed_age_group, not_diagnosed_age_group, 'age group')
-    elif type == 'Pie chart':
-        plot_piechart(age_group_list, diagnosed_age_group, not_diagnosed_age_group, 'age group')
     else:
-        # call percentage_of_diagnosed() function to display percentage of diagnosed participants according to their age group
-        percentage_of_diagnosed(age_group_list, 'age group', diagnosed_age_group, not_diagnosed_age_group)
+        plot_piechart(age_group_list, diagnosed_age_group, not_diagnosed_age_group, 'age group')
+    # if type == 'Bar graph':
+    #     plot_barchart(age_group_list, diagnosed_age_group, not_diagnosed_age_group, 'age group')
+    # elif type == 'Pie chart':
+    #     plot_piechart(age_group_list, diagnosed_age_group, not_diagnosed_age_group, 'age group')
+    # else:
+    #     # call percentage_of_diagnosed() function to display percentage of diagnosed participants according to their age group
+    #     percentage_of_diagnosed(age_group_list, 'age group', diagnosed_age_group, not_diagnosed_age_group)
 
 
 

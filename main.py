@@ -17,14 +17,18 @@ from modules import graphs
 class Widget(QtWidgets.QWidget):
     def __init__(self, parent=None):
         QtWidgets.QWidget.__init__(self, parent=None)
-        self.setFixedSize(1000,800)
+        self.setWindowTitle('INF-1002 Mental Health System')
+        self.setMinimumSize(1000,800)
         vLayout = QtWidgets.QVBoxLayout(self)
         hLayout = QtWidgets.QHBoxLayout()
 
 
         #Import data
+        headerInsight = QtWidgets.QLabel("Import file to display:")
         self.loadBtn = QtWidgets.QPushButton("Select File", self)
         self.loadBtn.setFixedSize(80, 25)
+        hLayout.setContentsMargins(0, 0, 750, 0)
+        hLayout.addWidget(headerInsight)
         hLayout.addWidget(self.loadBtn)
         vLayout.addLayout(hLayout)
 
@@ -154,7 +158,7 @@ class Widget(QtWidgets.QWidget):
         # dropdown for selected graph for age group
         self.dropdownAge = QtWidgets.QComboBox()
         self.dropdownAge.setFixedSize(150, 25)
-        self.dropdownAge.addItems(["Bar graph", "Pie chart", "Percentage"])
+        self.dropdownAge.addItems(["Bar graph", "Pie chart"])
         secGrid.addWidget(self.dropdownAge, 1, 1)
 
         # age group
@@ -231,7 +235,7 @@ class Widget(QtWidgets.QWidget):
     def displayGraph1(self):
         df = pd.read_csv('data/mental-heath.csv')
         cleaning.clean(df)
-        graph = graphs.workPer(df)
+        graphs.workPer(df)
 
     def displayGraph2(self):
         df = pd.read_csv('data/mental-heath.csv')

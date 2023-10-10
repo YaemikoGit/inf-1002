@@ -71,6 +71,7 @@ def clean(data):
     data.loc[0:, 'What is your gender?'].replace(spellForMale, 'Male', inplace=True)
     data.loc[0:, 'What is your gender?'].replace(spellOthers, 'Other', inplace=True)
 
-
+    #print(data)
+    return data
 
 

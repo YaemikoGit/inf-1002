@@ -14,8 +14,6 @@ def clean(data):
             'Do you think that discussing a physical health issue with your employer would have negative consequences?',
            'Is your employer primarily a tech company/organization?',
            'Is your primary role within your company related to tech/IT?',
-            'Has your employer ever formally discussed mental health (for example, as part of a wellness campaign or other official communication)?',
-           'Does your employer offer resources to learn more about mental health concerns and options for seeking help?',
            'Is your anonymity protected if you choose to take advantage of mental health or substance abuse treatment resources provided by your employer?',
            'If a mental health issue prompted you to request a medical leave from work, asking for that leave would be:',
            'Would you feel comfortable discussing a mental health disorder with your coworkers?',
@@ -51,21 +49,27 @@ def clean(data):
     spellForFemale = ['f', 'F', 'woman', 'female', 'femail', 'Cisgender Female', 'fem', 'cis female',
                       'Female (props for making this a freeform field, though)',
                       'Female assigned at birth ', 'Female or Multi-Gender Femme', 'female/woman', 'fm', 'Cis-woman',
-                      'I identify as female.', 'female ', 'Woman', 'Female ']
+                      'I identify as female.', 'female ', 'Woman',
+                      'Cis female', 'Genderfluid (born female)', 'Female', 'Female ', 'Cis female ', ' Female']
 
     spellForMale = ['Cis male', 'Cis Male', 'cisdude', 'Dude', 'man', 'M', 'm', 'M|', 'mail', 'Male (cis)', 'MALE',
-                    'Male.', 'Malr', 'Sex is male', 'male', 'Male ']
+                    'Male.', 'Malr', 'Sex is male', 'male',
+                    'Male ', 'nb masculine', 'Man', 'cis male', 'male',
+                    "I'm a man why didn't you make this a drop down question. You should of asked sex? And I would of answered yes please. Seriously how much text can this take? ",
+                    'male ', 'cis man']
 
     spellOthers = ['AFAB', 'Agender', 'Androgynous', 'Bigender', 'Enby', 'female-bodied; no feelings about gender',
                    'Fluid', 'GenderFluid', 'Genderfluid (born female)'
                                            'Genderflux demi-girl', 'genderqueer', 'Genderqueer', 'Male (trans, FtM)',
                    'male 9:1 female, roughly', 'Male/genderqueer', 'mtf'
                                                                    'nb masculine', 'Nonbinary', 'non-binary', 'Other',
-                   'Other/Transfeminine', 'Queer', 'Transgender woman', 'Transitioned, M2F', 'Unicorn']
+                   'Other/Transfeminine', 'Queer', 'Transgender woman', 'Transitioned, M2F', 'Unicorn',
+                   'none of your business', 'Human', 'Genderfluid', 'genderqueer woman', 'mtf', 'Genderflux demi-girl',
+                   'human']
 
     data.loc[0:, 'What is your gender?'].replace(spellForFemale, 'Female', inplace=True)
     data.loc[0:, 'What is your gender?'].replace(spellForMale, 'Male', inplace=True)
-    data.loc[0:, 'What is your gender?'].replace(spellOthers, 'Transgender', inplace=True)
+    data.loc[0:, 'What is your gender?'].replace(spellOthers, 'Other', inplace=True)
 
 
 

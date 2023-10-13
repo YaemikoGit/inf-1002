@@ -94,11 +94,6 @@ class Widget(QtWidgets.QWidget):
         firstGrid.addWidget(self.displayBtn3, 2, 1)
 
 
-
-
-
-
-        #uses firstGridR
         # Using a heatmap to show if there is a correlation or if there isn't
         # X-Axis: Do you believe your productivity is ever affected by a mental health issue?
         # Y-Axis: Do you feel employers take mental health as seriously as physical health?
@@ -106,24 +101,27 @@ class Widget(QtWidgets.QWidget):
         self.displaybtnHeat = QtWidgets.QPushButton("Display", self)
         self.displaybtnHeat.setFixedSize(80, 25)
         self.displaybtnHeat.clicked.connect(self.displayHeat)
-        firstGridR.addWidget(heatmapLabel, 0, 0)
-        firstGridR.addWidget(self.displaybtnHeat, 0, 1)
+        firstGrid.addWidget(heatmapLabel, 3, 0)
+        firstGrid.addWidget(self.displaybtnHeat, 3, 1)
 
 
-        #heatmap correlation
-        corrHeat = QtWidgets.QLabel("Overall Correlation:")
-        self.corrBtn = QtWidgets.QPushButton("Display", self)
-        self.corrBtn.setFixedSize(80, 25)
-        self.corrBtn.clicked.connect(self.overallHeat)
-        firstGridR.addWidget(corrHeat, 1, 0)
-        firstGridR.addWidget(self.corrBtn, 1, 1)
+
+
+
+
+        #uses firstGridR
+
+
+        # #heatmap correlation
+        # corrHeat = QtWidgets.QLabel("Overall Correlation:")
+        # self.corrBtn = QtWidgets.QPushButton("Display", self)
+        # self.corrBtn.setFixedSize(80, 25)
+        # self.corrBtn.clicked.connect(self.overallHeat)
+        # firstGridR.addWidget(corrHeat, 1, 0)
+        # firstGridR.addWidget(self.corrBtn, 1, 1)
 
 
         # Are current efforts effective and enough?
-        # dropdown for selected graph:
-        #   - mental health benefits in healthcare coverage
-        #   - discuss or conduct mental health events
-        #   - provide extra mental health resource
         effortLabel = QtWidgets.QLabel("Are current efforts effective and enough?")
         effortLabel.setContentsMargins(0, 20, 0, 0)
         self.dropdownEff = QtWidgets.QComboBox()
@@ -262,15 +260,15 @@ class Widget(QtWidgets.QWidget):
 
 
 
-        # classification report (MIGHT REMOVE)
-        classify = QtWidgets.QLabel("Overall classification:")
-        secGrid.addWidget(classify, 5, 0)
-
-        # location
-        self.overallBtn = QtWidgets.QPushButton("Display", self)
-        self.overallBtn.setFixedSize(80, 25)
-        self.overallBtn.clicked.connect(self.classfiedGraph)
-        secGrid.addWidget(self.overallBtn, 5, 1)
+        # # classification report (MIGHT REMOVE)
+        # classify = QtWidgets.QLabel("Overall classification:")
+        # secGrid.addWidget(classify, 5, 0)
+        #
+        # # classify
+        # self.overallBtn = QtWidgets.QPushButton("Display", self)
+        # self.overallBtn.setFixedSize(80, 25)
+        # self.overallBtn.clicked.connect(self.classfiedGraph)
+        # secGrid.addWidget(self.overallBtn, 5, 1)
 
 
 
@@ -355,12 +353,12 @@ class Widget(QtWidgets.QWidget):
         graphs.binaryLog(df)
 
 
-    ############(GOT ISSUES)
-    def classfiedGraph(self):
-        df = pd.read_csv('data/mental-heath.csv')
-        cleaning.clean(df)
-        graphs.classfied(df)
-    ######################
+    # ############(GOT ISSUES)
+    # def classfiedGraph(self):
+    #     df = pd.read_csv('data/mental-heath.csv')
+    #     cleaning.clean(df)
+    #     graphs.classfied(df)
+    # ######################
 
     def overallHeat(self):
         df = pd.read_csv('data/mental-heath.csv')

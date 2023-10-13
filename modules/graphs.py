@@ -837,7 +837,7 @@ def likeInf(data):
 
     # # title of stacked bar chart
     plt.title('Likeliness to Discuss Mental Health, Influenced by Observations/Experiences')
-
+    plt.ion()
     plt.show()
 
 

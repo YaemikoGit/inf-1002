@@ -123,7 +123,7 @@ def plot_barchart(x_label,diagnosed_response,not_diagnosed_response,cat):
 
   # add a legend
   plt.legend()
-
+  plt.ion()
   # show the plot
   plt.ion()
   plt.show()
@@ -160,11 +160,11 @@ def plot_piechart(x_label,diagnosed_response,not_diagnosed_response,cat):
         title_text='Percentage of %s Respondents with Diagnosed \nMental Health disorder'%x_label[i]
       elif cat=='family background':
         if x_label[i]=='Yes':
-          title_text= 'Percentage of Respondents with Family History that are\n Diagnosed with Mental Health Disorder'
+          title_text= 'Percentage of Respondents with Family History that\n are Diagnosed with Mental Health Disorder'
         elif x_label[i]=='No':
-          title_text= 'Percentage of Respondents without Family History that are\n Diagnosed with Mental Health Disorder'
+          title_text= 'Percentage of Respondents without Family History that\n are Diagnosed with Mental Health Disorder'
         else:
-          title_text= 'Percentage of Respondents with Unknown Family History that are\n Diagnosed with Mental Health Disorder'
+          title_text= 'Percentage of Respondents with Unknown Family History that\n are Diagnosed with Mental Health Disorder'
       elif cat=='location':
           title_text='Percentage of Respondents in %s that are\n Diagnosed with Mental Health Disorder'%x_label[i]
       elif cat=='personal history':
@@ -184,12 +184,12 @@ def plot_piechart(x_label,diagnosed_response,not_diagnosed_response,cat):
 
   plt.tight_layout()
   plt.ion()
+  plt.show()
 
 
 
 
-#remove label if responses of that particular label is less than 10% of the total
-def remove_insignificant_labels(data, labels,dataframe,total):
+def remove_insignificant_labels(data,labels,dataframe,total):
     #for appending labels with sample size that are large enough for plotting graph
     new_label=list(labels[:])
     #for printing purposes
@@ -422,11 +422,11 @@ def ageGroup(data, type):
     age_group_4 = '33-37'
     age_group_5 = '38-42'
     age_group_6 = '43-47'
-    age_group_7 = '47+'
+    age_group_7 = '48-52'
+    age_group_8 = '53-57'
+    age_group_9 = '58-60'
 
-    data['What is your age?'] = pd.cut(data['What is your age?'], bins=[18, 22, 27, 32, 37, 42, 47, 50],
-                             labels=[age_group_1, age_group_2, age_group_3, age_group_4, age_group_5, age_group_6,
-                                     age_group_7])
+    data['What is your age?'] = pd.cut(data['What is your age?'], bins=[18, 22, 27, 32, 37, 42,47,52,57,60], labels=[age_group_1, age_group_2, age_group_3, age_group_4, age_group_5, age_group_6,age_group_7,age_group_8,age_group_9])
 
     # variable to store age_group
     age_group = data['What is your age?']
@@ -448,15 +448,19 @@ def ageGroup(data, type):
     age_group6_no = data[(age_group == age_group_6) & (is_diagnosed == 'No')].count()[0]
     age_group7_yes = data[(age_group == age_group_7) & (is_diagnosed == 'Yes')].count()[0]
     age_group7_no = data[(age_group == age_group_7) & (is_diagnosed == 'No')].count()[0]
+    age_group8_yes = data[(age_group == age_group_8) & (is_diagnosed == 'Yes')].count()[0]
+    age_group8_no = data[(age_group == age_group_8) & (is_diagnosed == 'No')].count()[0]
+    age_group9_yes = data[(age_group == age_group_9) & (is_diagnosed == 'Yes')].count()[0]
+    age_group9_no = data[(age_group == age_group_9) & (is_diagnosed == 'No')].count()[0]
 
     # seperating the defined groups above into diagnosed and not diagnosed list of responses
     diagnosed_age_group = [age_group1_yes, age_group2_yes, age_group3_yes, age_group4_yes, age_group5_yes,
-                           age_group6_yes, age_group7_yes]
+                           age_group6_yes, age_group7_yes, age_group8_yes, age_group9_yes]
     not_diagnosed_age_group = [age_group1_no, age_group2_no, age_group3_no, age_group4_no, age_group5_no, age_group6_no,
-                               age_group7_no]
+                               age_group7_no, age_group8_yes, age_group9_yes]
 
-    age_group_list = [age_group_1, age_group_2, age_group_3, age_group_4, age_group_5, age_group_6, age_group_7]
-
+    age_group_list = [age_group_1, age_group_2, age_group_3, age_group_4, age_group_5, age_group_6, age_group_7,
+                       age_group_8, age_group_9]
 
     # #Select which graph to be output based on dropdown
     if type == 'Bar graph':
@@ -495,10 +499,6 @@ def gender(data, type):
     if type == 'Bar graph':
         plot_barchart(gender_label,diagnosed_gender_group,not_diagnosed_gender_group,'gender')
     else:
-
-        # recall the function to remove groups with sample sizes that are too small
-        gender_label = remove_insignificant_labels(data, gender_label, gender_df, len(gender_df))
-
         plot_piechart(gender_label,diagnosed_gender_group,not_diagnosed_gender_group,'gender')
 
 
@@ -562,34 +562,7 @@ def location(data, type):
 
 
 
-# e) Individual
-def indivi(data, type):
-    data['Have you had a mental health disorder in the past?'].unique()
-    is_diagnosed = data['Have you been diagnosed with a mental health condition by a medical professional?']
 
-    have_mental_health_history = data['Have you had a mental health disorder in the past?']
-    # classifying responses based on personal history of mental illness
-    # storing number of responses of different groups of diagnosed and not diagnosed participants with different personal history
-    diagnosed_with_no_mhh = data[(have_mental_health_history == "No") & (is_diagnosed == 'Yes')].count()[0]
-    not_diagnosed_with_no_mhh = data[(have_mental_health_history == 'No') & (is_diagnosed == 'No')].count()[0]
-    diagnosed_with_mhh = data[(have_mental_health_history == 'Yes') & (is_diagnosed == 'Yes')].count()[0]
-    not_diagnosed_with_mhh = data[(have_mental_health_history == 'Yes') & (is_diagnosed == 'No')].count()[0]
-    diagnosed_with_unknown_mhh = data[(have_mental_health_history == "Maybe") & (is_diagnosed == 'Yes')].count()[0]
-    not_diagnosed_with_unknown_mhh = data[(have_mental_health_history == "Maybe") & (is_diagnosed == 'No')].count()[0]
-
-    # the list is stored in a pattern of with mental health disorder history, with mental unknown health disorder history, and with no mental health disorder historythis follows df.unique of this particular df
-    diagnosed_group = [diagnosed_with_mhh, diagnosed_with_unknown_mhh, diagnosed_with_no_mhh]
-    not_diagnosed_group = [not_diagnosed_with_mhh, not_diagnosed_with_unknown_mhh, not_diagnosed_with_no_mhh]
-
-    # storing labels for graph plotting and analysis purposes
-    mental_health_history_label = data['Have you had a mental health disorder in the past?'].unique()
-
-    if type == 'Bar graph':
-        # plotting bar chart for different groups of personal history of mental health disorder
-        plot_barchart(mental_health_history_label, diagnosed_group, not_diagnosed_group, 'personal history')
-    else:
-        # plot pie chart for respective groups of different perosnal history of mental health disorder
-        plot_piechart(mental_health_history_label, diagnosed_group, not_diagnosed_group, 'personal history')
 
 
 # classified them tgt (might renove)

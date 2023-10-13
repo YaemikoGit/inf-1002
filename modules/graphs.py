@@ -553,8 +553,6 @@ def location(data, type):
     diagnosed_location = [diagnosed_uk, diagnosed_us]
     not_diagnosed_location = [not_diagnosed_uk, not_diagnosed_us]
 
-    plot_barchart(location_label, diagnosed_location, not_diagnosed_location, 'location')
-
     if type == 'Bar graph':
         plot_barchart(location_label,diagnosed_location,not_diagnosed_location,'location')
     else:
@@ -562,92 +560,40 @@ def location(data, type):
 
 
 
+# e) Individual
+def indivi(data, type):
+    data['Have you had a mental health disorder in the past?'].unique()
+    is_diagnosed = data['Have you been diagnosed with a mental health condition by a medical professional?']
+
+    have_mental_health_history = data['Have you had a mental health disorder in the past?']
+    # classifying responses based on personal history of mental illness
+    # storing number of responses of different groups of diagnosed and not diagnosed participants with different personal history
+    diagnosed_with_no_mhh = data[(have_mental_health_history == "No") & (is_diagnosed == 'Yes')].count()[0]
+    not_diagnosed_with_no_mhh = data[(have_mental_health_history == 'No') & (is_diagnosed == 'No')].count()[0]
+    diagnosed_with_mhh = data[(have_mental_health_history == 'Yes') & (is_diagnosed == 'Yes')].count()[0]
+    not_diagnosed_with_mhh = data[(have_mental_health_history == 'Yes') & (is_diagnosed == 'No')].count()[0]
+    diagnosed_with_unknown_mhh = data[(have_mental_health_history == "Maybe") & (is_diagnosed == 'Yes')].count()[0]
+    not_diagnosed_with_unknown_mhh = data[(have_mental_health_history == "Maybe") & (is_diagnosed == 'No')].count()[0]
+
+    # the list is stored in a pattern of with mental health disorder history, with mental unknown health disorder history, and with no mental health disorder historythis follows df.unique of this particular df
+    diagnosed_group = [diagnosed_with_mhh, diagnosed_with_unknown_mhh, diagnosed_with_no_mhh]
+    not_diagnosed_group = [not_diagnosed_with_mhh, not_diagnosed_with_unknown_mhh, not_diagnosed_with_no_mhh]
+
+    # storing labels for graph plotting and analysis purposes
+    mental_health_history_label = data['Have you had a mental health disorder in the past?'].unique()
+
+    if type == 'Bar graph':
+        # plotting bar chart for different groups of personal history of mental health disorder
+        plot_barchart(mental_health_history_label, diagnosed_group, not_diagnosed_group, 'personal history')
+    else:
+        # plot pie chart for respective groups of different perosnal history of mental health disorder
+        plot_piechart(mental_health_history_label, diagnosed_group, not_diagnosed_group, 'personal history')
 
 
 
-# classified them tgt (might renove)
-def classfied(data):
-
-    # Make a copy to prevent changes to original
-    columns_to_copy = ['What is your gender?',
-                       'Have you been diagnosed with a mental health condition by a medical professional?',
-                       'Do you have a family history of mental illness?', 'What is your age?',
-                       'What country do you work in?', 'Have you had a mental health disorder in the past?',
-                       'What is your age?']
-    blr = data[columns_to_copy].copy(deep=True)
-
-    # Keeping countries UK and USA
-    blr = blr.drop(blr[(blr['What country do you work in?'] != 'United Kingdom') & (blr['What country do you work in?'] != 'United States of America')].index)
-
-    print(blr['What country do you work in?'])
-
-    # formatting the categorical values:
-    def format(blr, text, newList, oldList):
-        for no_list in range(len(new_familyHistory)):
-            blr.loc[0:, text].replace(oldList[no_list], newList[no_list], inplace=True)
-
-    # Change yes no to 1 0
-    blr.loc[0:, "Have you been diagnosed with a mental health condition by a medical professional?"].replace("Yes", 1, inplace=True)
-    blr.loc[0:, "Have you been diagnosed with a mental health condition by a medical professional?"].replace("No", 0, inplace= True)
-
-    # genders
-    dummy_genders = pd.get_dummies(blr["What is your gender?"]).drop(["Other"], axis=1)
-
-    # family history
-    new_familyHistory = ["Idk_familyHistory", "No_familyHistory", "Yes_familyHistory"]
-    old_familyHistory = ["I don't know", "No", "Yes"]
-    format(data, "Do you have a family history of mental illness?", new_familyHistory, old_familyHistory)
-    dummy_familyHistory = pd.get_dummies(data["Do you have a family history of mental illness?"]).drop([new_familyHistory[0]], axis=1)
-
-    # past mental health
-    new_past = ["Maybe_Past", "No_Past", "Yes_Past"]
-    old_past = ["Maybe", "No", "Yes"]
-    format(blr, "Have you had a mental health disorder in the past?", new_past, old_past)
-    dummy_past = pd.get_dummies(blr["Have you had a mental health disorder in the past?"]).drop([new_past[0]], axis=1)
-
-    # countries
-    dummy_country = pd.get_dummies(blr["What country do you work in?"]).drop("United Kingdom",  axis=1)
-    print('next\n')
-    print(dummy_country)
-
-    # Input x variables, y variable x now has 1034, y has 1433
-    X = pd.concat([dummy_familyHistory, dummy_genders, dummy_past, dummy_country], axis=1)
-    y = blr['Have you been diagnosed with a mental health condition by a medical professional?']
-
-    print(X)
-    print(y)
-
-
-    # Divide the data to training set and test set
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=1234)
-
-    lr_model = LogisticRegression()
-
-    y_train = y_train.astype('int')
-    y_test = y_test.astype('int')
-    lr_model.fit(X_train, y_train)
-
-    y_pred_sk = lr_model.predict(X_test)
 
 
 
-    y_train = y_train
-    y_test = y_test
-    lr_model.fit(X_train, y_train)
-    y_pred_sk = lr_model.predict(X_test)
-
-    print(classification_report(y_test, y_pred_sk))
-
-    importance = lr_model.coef_.flatten()
-    #print(importance)
-    print('ok3')
-    # Shows the impact of each coefficient
-    plt.rcParams["figure.figsize"] = (10, 10)
-    plt.barh(X.columns, importance)
-    plt.title("Feature Importance")
-    plt.xlabel("score")
-    plt.ion()
-    plt.show()
 
 
 
@@ -844,6 +790,8 @@ def likeInf(data):
     plt.title('Likeliness to Discuss Mental Health, \nInfluenced by Observations/Experiences')
     plt.ion()
     plt.show()
+
+
 
 
 

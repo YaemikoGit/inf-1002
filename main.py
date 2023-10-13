@@ -270,7 +270,7 @@ class Widget(QtWidgets.QWidget):
         self.dropdownIn.addItems(["Bar graph", "Pie chart"])
         secGrid.addWidget(self.dropdownIn, 5, 1)
 
-        # location
+        # individual
         self.displayIndiBtn = QtWidgets.QPushButton("Display", self)
         self.displayIndiBtn.setFixedSize(80, 25)
         self.displayIndiBtn.clicked.connect(self.displayIndividual)

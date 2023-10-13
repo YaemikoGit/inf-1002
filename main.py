@@ -278,15 +278,15 @@ class Widget(QtWidgets.QWidget):
 
 
 
-        # # classification report (MIGHT REMOVE)
-        # classify = QtWidgets.QLabel("Overall classification:")
-        # secGrid.addWidget(classify, 5, 0)
-        #
-        # # classify
-        # self.overallBtn = QtWidgets.QPushButton("Display", self)
-        # self.overallBtn.setFixedSize(80, 25)
-        # self.overallBtn.clicked.connect(self.classfiedGraph)
-        # secGrid.addWidget(self.overallBtn, 5, 1)
+        # classification report (MIGHT REMOVE)
+        classify = QtWidgets.QLabel("Overall classification:")
+        secGrid.addWidget(classify, 6, 0)
+
+        # classify
+        self.overallBtn = QtWidgets.QPushButton("Display", self)
+        self.overallBtn.setFixedSize(80, 25)
+        self.overallBtn.clicked.connect(self.classfiedGraph)
+        secGrid.addWidget(self.overallBtn, 6, 1)
 
 
 
@@ -378,12 +378,11 @@ class Widget(QtWidgets.QWidget):
         graphs.binaryLog(df)
 
 
-    # ############(GOT ISSUES)
-    # def classfiedGraph(self):
-    #     df = pd.read_csv('data/mental-heath.csv')
-    #     cleaning.clean(df)
-    #     graphs.classfied(df)
-    # ######################
+    #(GOT ISSUES)
+    def classfiedGraph(self):
+        df = pd.read_csv('data/mental-heath.csv')
+        cleaning.clean(df)
+        graphs.classfied(df)
 
     def overallHeat(self):
         df = pd.read_csv('data/mental-heath.csv')

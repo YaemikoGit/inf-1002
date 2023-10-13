@@ -187,7 +187,7 @@ def plot_piechart(x_label,diagnosed_response,not_diagnosed_response,cat):
 
 
 #remove label if responses of that particular label is less than 10% of the total
-def remove_insignificant_labels(labels,dataframe,total):
+def remove_insignificant_labels(data, labels,dataframe,total):
     #for appending labels with sample size that are large enough for plotting graph
     new_label=list(labels[:])
     #for printing purposes
@@ -196,7 +196,7 @@ def remove_insignificant_labels(labels,dataframe,total):
     removed_count=0
     for i in labels:
       #if responses are less than 10%, remove it from the new label list and add it to the removed_label list for printing purposes
-      if df[dataframe==i].count()[0]/total <0.1:
+      if data[dataframe==i].count()[0]/total <0.1:
         new_label.remove(i)
         removed_label.append(i)
         removed_count+=1

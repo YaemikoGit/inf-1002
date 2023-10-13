@@ -480,7 +480,7 @@ def gender(data, type):
     diagnosed_trans = data[(gender_df == "Other") & (is_diagnosed == 'Yes')].count()[0]
     not_diagnosed_trans = data[(gender_df == "Other") & (is_diagnosed == 'No')].count()[0]
 
-    # the list is stored in a pattern of male, female, transgender, this follows df.unique of this particular df
+    # the list is stored in a pattern of male, female, other, this follows df.unique of this particular df
     diagnosed_gender_group = [diagnosed_male, diagnosed_female, diagnosed_trans]
     not_diagnosed_gender_group = [not_diagnosed_male, not_diagnosed_female, not_diagnosed_trans]
 

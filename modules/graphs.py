@@ -8,6 +8,9 @@ from sklearn import metrics
 from sklearn.model_selection import train_test_split
 from math import exp
 from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import classification_report
+from dython.nominal import associations
+from dython.nominal import identify_nominal_columns
 
 
 #Extra functions to be used for plotting
@@ -109,6 +112,8 @@ def plot_barchart(x_label,diagnosed_response,not_diagnosed_response,cat):
   # add a legend
   plt.legend()
 
+  plt.ion()
+
   # show the plot
   plt.show()
 
@@ -127,16 +132,21 @@ def plot_piechart(x_label,diagnosed_response,not_diagnosed_response,cat):
   # subplots with the specified number of rows and columns
   fig, axs = plt.subplots(num_rows, num_columns, figsize=(12, 12))
   if num_rows<2:
+
     #making axs a list such that it is iterable
     axs=[axs]
+
   # plotting one piechart for each of the group(labels) specified
   for i in range(len(x_label)):
+
       #determine which row and column to show the plotted graph
       row = i // num_columns
       col = i % num_columns
       ax = axs[row][col]
+
       #plotting the pie chart with the diagnosed and not diagnosed responses
       ax.pie([diagnosed_response[i],not_diagnosed_response[i]], labels=labels, autopct='%1.1f%%', colors=colors,startangle=90)
+
       #determine the title text of each pie chart depending on the given category
       if cat=='age group':
         title_text=('Number of Participant of age %s with diagnosed \nmental health disorder'%x_label[i])
@@ -151,6 +161,7 @@ def plot_piechart(x_label,diagnosed_response,not_diagnosed_response,cat):
           title_text= 'Number of participant with unknown family history that are diagnosed \n with mental health disorder'
       elif cat=='location':
           title_text='Number of participant in %s that are diagnosed \n with mental health disorder'%x_label[i]
+
       #setting the title for each pie chart
       ax.set_title(title_text)
 
@@ -160,7 +171,7 @@ def plot_piechart(x_label,diagnosed_response,not_diagnosed_response,cat):
     fig.delaxes(axs[num_rows-1][1])
 
   plt.tight_layout()
-
+  plt.ion()
   plt.show()
 
 
@@ -181,14 +192,14 @@ def remove_insignificant_labels(data,labels,dataframe,total):
         removed_count+=1
 
     #determine text to display based on the amount of labels removed
-    if removed_count==1:
-      print("'"+removed_label[0]+"'",end='')
-      print(' has been removed due to its small sample size')
-
-    elif removed_count>1:
-      for j in removed_label:
-        print("'"+j+"'", end=', ')
-      print(' have been removed due to their small sample size')
+    # if removed_count==1:
+    #   print("'"+removed_label[0]+"'",end='')
+    #   print(' has been removed due to its small sample size')
+    #
+    # elif removed_count>1:
+    #   for j in removed_label:
+    #     print("'"+j+"'", end=', ')
+    #   print(' have been removed due to their small sample size')
 
     return new_label
 
@@ -213,6 +224,7 @@ def workPer(data):
     plt.xticks(fontsize=12)
     plt.yticks(fontsize=12)
 
+    plt.ion()
     plt.show()
 
 
@@ -255,6 +267,8 @@ def workAffected(data):
 
     plt.setp(texts, size = 12, weight ="bold")
     ax.set_title("Work Time affected by mental health")
+
+    plt.ion()
 
     # show plot
     plt.show()
@@ -304,7 +318,9 @@ def conditions(data):
     labels = ['{0} - {1:1.2f} %'.format(i, j) for i, j in zip(conditions, percent)]
 
     patches, texts = plt.pie(numbers, colors=colors, startangle=90, radius=1.2)
-    plt.legend(patches, labels, loc='center right', bbox_to_anchor=(0.1, 1.), fontsize=8)
+    plt.legend(patches, labels, loc='center right', bbox_to_anchor=(0.5, 0.5), fontsize=8)
+
+    plt.ion()
     plt.show()
 
 
@@ -349,10 +365,36 @@ def heatmap(data):
     new_df = my_df
     new_df.apply(lambda x: x.factorize()[0]).corr()
     sns.heatmap(pd.crosstab(new_df[employer], new_df[prod]))
-
+    plt.ion()
     plt.show()
 
 
+# ERRORS
+def correlationHeat(data):
+    # https://medium.com/@knoldus/how-to-find-correlation-value-of-categorical-variables-23de7e7a9e26
+    # https://blog.knoldus.com/how-to-find-correlation-value-of-categorical-variables/
+
+    categorical_features = identify_nominal_columns(data)
+    print('ok')
+    # Make a copy to prevent changes to original
+    columns_to_copy = ['What is your gender?',
+                       'Have you been diagnosed with a mental health condition by a medical professional?',
+                       'Do you have a family history of mental illness?', 'What is your age?',
+                       'What country do you work in?', 'Have you had a mental health disorder in the past?',
+                       'What is your age?']
+    blr = data[columns_to_copy].copy(deep=True)
+    print('ok1')
+    # Keeping countries UK and USA
+    blr = blr.drop(blr[(blr['What country do you work in?'] != 'United Kingdom') & (
+                blr['What country do you work in?'] != 'United States of America')].index)
+    print('ok2')
+
+
+
+    complete_correlation = associations(blr, filename='complete_correlation.png', figsize=(10, 10))
+    sns.heatmap(pd.crosstab(complete_correlation))
+    print('ok3')
+    df_complete_corr = complete_correlation['corr']
 
 
 # What groups are more prone to mental health issues?
@@ -407,13 +449,6 @@ def ageGroup(data, type):
         plot_barchart(age_group_list, diagnosed_age_group, not_diagnosed_age_group, 'age group')
     else:
         plot_piechart(age_group_list, diagnosed_age_group, not_diagnosed_age_group, 'age group')
-    # if type == 'Bar graph':
-    #     plot_barchart(age_group_list, diagnosed_age_group, not_diagnosed_age_group, 'age group')
-    # elif type == 'Pie chart':
-    #     plot_piechart(age_group_list, diagnosed_age_group, not_diagnosed_age_group, 'age group')
-    # else:
-    #     # call percentage_of_diagnosed() function to display percentage of diagnosed participants according to their age group
-    #     percentage_of_diagnosed(age_group_list, 'age group', diagnosed_age_group, not_diagnosed_age_group)
 
 
 
@@ -513,6 +548,92 @@ def location(data, type):
 
 
 
+# classified them tgt (might renove)
+def classfied(data):
+
+    # Make a copy to prevent changes to original
+    columns_to_copy = ['What is your gender?',
+                       'Have you been diagnosed with a mental health condition by a medical professional?',
+                       'Do you have a family history of mental illness?', 'What is your age?',
+                       'What country do you work in?', 'Have you had a mental health disorder in the past?',
+                       'What is your age?']
+    blr = data[columns_to_copy].copy(deep=True)
+
+    # Keeping countries UK and USA
+    blr = blr.drop(blr[(blr['What country do you work in?'] != 'United Kingdom') & (blr['What country do you work in?'] != 'United States of America')].index)
+
+    print(blr['What country do you work in?'])
+
+    # formatting the categorical values:
+    def format(blr, text, newList, oldList):
+        for no_list in range(len(new_familyHistory)):
+            blr.loc[0:, text].replace(oldList[no_list], newList[no_list], inplace=True)
+
+    # Change yes no to 1 0
+    blr.loc[0:, "Have you been diagnosed with a mental health condition by a medical professional?"].replace("Yes", 1, inplace=True)
+    blr.loc[0:, "Have you been diagnosed with a mental health condition by a medical professional?"].replace("No", 0, inplace= True)
+
+    # genders
+    dummy_genders = pd.get_dummies(blr["What is your gender?"]).drop(["Other"], axis=1)
+
+    # family history
+    new_familyHistory = ["Idk_familyHistory", "No_familyHistory", "Yes_familyHistory"]
+    old_familyHistory = ["I don't know", "No", "Yes"]
+    format(data, "Do you have a family history of mental illness?", new_familyHistory, old_familyHistory)
+    dummy_familyHistory = pd.get_dummies(data["Do you have a family history of mental illness?"]).drop([new_familyHistory[0]], axis=1)
+
+    # past mental health
+    new_past = ["Maybe_Past", "No_Past", "Yes_Past"]
+    old_past = ["Maybe", "No", "Yes"]
+    format(blr, "Have you had a mental health disorder in the past?", new_past, old_past)
+    dummy_past = pd.get_dummies(blr["Have you had a mental health disorder in the past?"]).drop([new_past[0]], axis=1)
+
+    # countries
+    dummy_country = pd.get_dummies(blr["What country do you work in?"]).drop("United Kingdom",  axis=1)
+    print('next\n')
+    print(dummy_country)
+
+    # Input x variables, y variable x now has 1034, y has 1433
+    X = pd.concat([dummy_familyHistory, dummy_genders, dummy_past, dummy_country], axis=1)
+    y = blr['Have you been diagnosed with a mental health condition by a medical professional?']
+
+    print(X)
+    print(y)
+
+
+    # Divide the data to training set and test set
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=1234)
+
+    lr_model = LogisticRegression()
+
+    y_train = y_train.astype('int')
+    y_test = y_test.astype('int')
+    lr_model.fit(X_train, y_train)
+
+    y_pred_sk = lr_model.predict(X_test)
+
+
+
+    y_train = y_train
+    y_test = y_test
+    lr_model.fit(X_train, y_train)
+    y_pred_sk = lr_model.predict(X_test)
+
+    print(classification_report(y_test, y_pred_sk))
+
+    importance = lr_model.coef_.flatten()
+    #print(importance)
+    print('ok3')
+    # Shows the impact of each coefficient
+    plt.rcParams["figure.figsize"] = (10, 10)
+    plt.barh(X.columns, importance)
+    plt.title("Feature Importance")
+    plt.xlabel("score")
+    plt.ion()
+    plt.show()
+
+
+
 
 
 # Are current efforts effective and enough?
@@ -520,79 +641,256 @@ def effort(data, type):
 
     if type == 'Mental health benefits in healthcare coverage':
 
+        # plot number of people who receives/do not receive mental health benefits
         data["Does your employer provide mental health benefits as part of healthcare coverage?"].replace(
             'Not eligible for coverage / N/A', 'No', inplace=True)
-        effort1 = sns.countplot(data,x="Does your employer provide mental health benefits as part of healthcare coverage?", palette='Blues')
+        effort1 = sns.countplot(data, x="Does your employer provide mental health benefits as part of healthcare coverage?", palette='Blues')
+        effort1.bar_label(effort1.containers[0], fontsize=10)
         effort1.set(title='Provides Mental Health Benefits in Healthcare Coverage', xlabel='')
+        plt.ion()
         plt.show()
 
     elif type == 'Discussed or Conducted mental health events':
 
-        effort2 = sns.countplot(data,x="Has your employer ever formally discussed mental health (for example, as part of a wellness campaign or other official communication)?",
-                                order=['No', 'Yes', 'I don\'t know'], palette='Blues')
+        # plot number of people whose companies host mental health events
+        effort2 = sns.countplot(data, x="Has your employer ever formally discussed mental health (for example, as part of a wellness campaign or other official communication)?")
+        effort2.bar_label(effort2.containers[0], fontsize=10)
         effort2.set(title='Discussed or Conducted Mental Health Events', xlabel='')
+        plt.ion()
         plt.show()
 
     else:
-
-        effort3 = sns.countplot(data,x="Does your employer offer resources to learn more about mental health concerns and options for seeking help?",
-                                palette='Blues')
+        # plot number of people whose companies provide extra mental health resources
+        effort3 = sns.countplot(data, x="Does your employer offer resources to learn more about mental health concerns and options for seeking help?", palette='Blues')
+        effort3.bar_label(effort3.containers[0], fontsize=10)
         effort3.set(title='Provides Extra Mental Health Resources', xlabel='')
+        plt.ion()
         plt.show()
 
+
+
+
+def conseq(data, type):
+
+    if type == 'Employees with No Mental Health Support':
+        # filter columns whereby employees do not receive any mental health support (mental health coverage benefits, campaigns, extra resources)
+        filter_nosupport = ((data['Does your employer provide mental health benefits as part of healthcare coverage?'] == 'No') &
+                            (data['Has your employer ever formally discussed mental health (for example, as part of a wellness campaign or other official communication)?'] == 'No') &
+                            (data['Does your employer offer resources to learn more about mental health concerns and options for seeking help?'] == 'No'))
+
+        # Use the boolean mask to filter the DataFrame
+        df_nosupport = pd.DataFrame(data=data[filter_nosupport])
+
+        responses = []
+        countlist = []
+
+        negconsequence = df_nosupport['Do you think that discussing a mental health disorder with your employer would have negative consequences?']
+
+        for i in range(len(negconsequence.value_counts())):
+            countlist.append(negconsequence.value_counts()[i])
+            responses.append(negconsequence.value_counts().index[i])
+        # rename responses labels
+        responses[0] = 'May have Negative Consequences'
+        responses[1] = 'No Negative Consequences'
+        responses[2] = 'Have Negative Consequences'
+
+        # plot pie chart
+        fig = plt.figure()
+        ax = fig.add_axes([0, 0, 1, 1])
+
+        ax.axis('equal')
+        ax.pie(countlist, autopct='%1.2f%%', colors=['#c2be4a', '#4ac250', '#c2564a'])
+        # plt.legend()
+        ax.legend(countlist, labels=responses, bbox_to_anchor=(0.5, 0.5), loc='center right', fontsize=8)
+
+        # pie chart title
+        fig.suptitle('Employees with All Mental Health Support: \n Consequence upon discussing Mental Health Disorders with Employers')
+
+        plt.ion()
+        plt.show()
+
+    else:
+        # filter columns whereby employees receive all mental health support (mental health coverage benefits, campaigns, extra resources)
+        filter_allsupport = ((data['Does your employer provide mental health benefits as part of healthcare coverage?'] == 'Yes') &
+                             (data[ 'Has your employer ever formally discussed mental health (for example, as part of a wellness campaign or other official communication)?'] == 'Yes') &
+                             (data['Does your employer offer resources to learn more about mental health concerns and options for seeking help?'] == 'Yes'))
+
+        # Use the boolean mask to filter the DataFrame
+        df_allsupport = pd.DataFrame(data=data[filter_allsupport])
+        allsupport_responses = []
+        allsupport_countlist = []
+
+        allnegconsequence = df_allsupport[
+            'Do you think that discussing a mental health disorder with your employer would have negative consequences?']
+
+        for i in range(len(allnegconsequence.value_counts())):
+            allsupport_countlist.append(allnegconsequence.value_counts()[i])
+            allsupport_responses.append(allnegconsequence.value_counts().index[i])
+
+        # rename responses labels
+        allsupport_responses[0] = 'No Negative Consequences'
+        allsupport_responses[1] = 'May have Negative Consequences'
+        allsupport_responses[2] = 'Have Negative Consequences'
+
+        # plot pie chart
+        fig = plt.figure()
+        ax = fig.add_axes([0, 0, 1, 1])
+        ax.axis('equal')
+
+        ax.pie(allsupport_countlist, autopct='%1.2f%%', colors=['#c2be4a', '#4ac250', '#c2564a'])
+        # plt.legend()
+        ax.legend(allsupport_countlist, labels=allsupport_responses, bbox_to_anchor=(0.5, 0.5), loc='center right', fontsize=8)
+
+        # displaying the title
+        fig.suptitle("Employees with All Mental Health Support: \n Consequence upon discussing Mental Health Disorders with Employers")
+
+        plt.ion()
+        plt.show()
+
+
+
+
+def likeInf(data):
+    # filter those who have experienced
+    pd.set_option('display.max_columns', None)
+    filter_yesexperienced = (data['Have you observed or experienced an unsupportive or badly handled response to a mental health issue in your current or previous workplace?'] == 'Yes, I experienced')
+    df_yesexperienced = pd.DataFrame(data=data[filter_yesexperienced])
+
+    # filter those who have observed
+    filter_yesobserved = (data['Have you observed or experienced an unsupportive or badly handled response to a mental health issue in your current or previous workplace?'] == 'Yes, I observed')
+    df_yesobserved = pd.DataFrame(data=data[filter_yesobserved])
+
+    # get count of responses for those who have experienced
+    yesexperienced_responses = []
+    yesexperienced_countlist = []
+
+    influence_yesexperienced = df_yesexperienced['Have your observations of how another individual who discussed a mental health disorder made you less likely to reveal a mental health issue yourself in your current workplace?']
+
+    for i in range(len(influence_yesexperienced.value_counts())):
+        yesexperienced_countlist.append(influence_yesexperienced.value_counts()[i])
+        yesexperienced_responses.append(influence_yesexperienced.value_counts().index[i])
+
+    # get count of responses for those who have observed
+    yesobserved_responses = []
+    yesobserved_countlist = []
+
+    influence_yesobserved = df_yesobserved[
+        'Have your observations of how another individual who discussed a mental health disorder made you less likely to reveal a mental health issue yourself in your current workplace?']
+
+    for i in range(len(influence_yesobserved.value_counts())):
+        yesobserved_countlist.append(influence_yesobserved.value_counts()[i])
+        yesobserved_responses.append(influence_yesobserved.value_counts().index[i])
+
+    # filter those who might have experienced or observed
+    filter_maybeexperienced = (data['Have you observed or experienced an unsupportive or badly handled response to a mental health issue in your current or previous workplace?'] == 'Maybe/Not sure')
+    df_maybeexperienced = pd.DataFrame(data=data[filter_maybeexperienced])
+
+
+    # get count of responses for those who might have experienced or observed
+    maybeexperienced_responses = []
+    maybeexperienced_countlist = []
+
+    influence_maybeexperienced = df_maybeexperienced['Have your observations of how another individual who discussed a mental health disorder made you less likely to reveal a mental health issue yourself in your current workplace?']
+
+    for i in range(len(influence_maybeexperienced.value_counts())):
+        maybeexperienced_countlist.append(influence_maybeexperienced.value_counts()[i])
+        maybeexperienced_responses.append(influence_maybeexperienced.value_counts().index[i])
+
+    # new dataframe for barchart
+
+    # responses rename
+    # Unlikely to Discuss (response:Yes)
+    # Likely to Discuss (response:No)
+    # Might Discuss (response:Maybe)
+    influence_df = pd.DataFrame({'Have Observed': [125, 61, 55],
+                                 'Have Experienced': [63, 32, 41],
+                                 'Might have \nObserved or Experienced': [52, 80, 136]},
+                                index=['Unlikely to Discuss', 'Might Discuss', 'Likely to Discuss'])
+
+    # stacked bar chart: influence of actions based on experiences
+    influ = influence_df.plot(kind='bar', stacked=True, color=['pink', 'yellow', 'skyblue'])
+
+    # labels for x & y axis
+    plt.xlabel('\n Likeliness to Discuss')
+    plt.ylabel('Number of Employees')
+
+    plt.xticks(rotation=0)
+
+    influ.bar_label(influ.containers[2], fontsize=10);
+    for c in influ.containers:
+        # Optional: if the segment is small or 0, customize the labels
+        labels = [v.get_height() if v.get_height() > 0 else '' for v in c]
+        # remove the labels parameter if it's not needed for customized labels
+        influ.bar_label(c, labels=labels, label_type='center')
+
+    # # title of stacked bar chart
+    plt.title('Likeliness to Discuss Mental Health, Influenced by Observations/Experiences')
+
+    plt.show()
 
 
 
 # Prediction of whether certain factors determine mental illness
 def binaryLog(data):
-    # Make a copy to prevent changes to original
-    blr = data.copy(deep=True)
+    # formatting the categorical values:
+    def format(blr, text, newList, oldList):
+        for no_list in range(len(new_familyHistory)):
+            blr.loc[0:, text].replace(oldList[no_list], newList[no_list], inplace=True)
 
     # Change yes no to 1 0
-    blr.loc[0:, "Have you been diagnosed with a mental health condition by a medical professional?"].replace("Yes", 1,
+    data.loc[0:, "Have you been diagnosed with a mental health condition by a medical professional?"].replace("Yes", 1,
                                                                                                              inplace=True)
-    blr.loc[0:, "Have you been diagnosed with a mental health condition by a medical professional?"].replace("No", 0,
+    data.loc[0:, "Have you been diagnosed with a mental health condition by a medical professional?"].replace("No", 0,
                                                                                                              inplace=True)
 
     # Link to reason why must drop 1 dummy
+    # https://medium.com/nerd-for-tech/what-is-dummy-variable-trap-how-it-can-be-handled-using-python-78ec17246331#:~:text=So%20if%20there%20are%20n,variable%20has%20to%20be%20dropped.
     # Dummy variable trap explained
     # https://www.algosome.com/articles/dummy-variable-trap-regression.html#:~:text=The%20solution%20to%20the%20dummy,remaining%20categories%20represent%20the%20change
 
-    # 3 genders, Male Female Transgender --> 0 and 1s
-    dummy_genders = pd.get_dummies(blr["What is your gender?"]).drop(["Female"], axis=1)
+    # genders
+    dummy_genders = pd.get_dummies(data["What is your gender?"]).drop(["Other"], axis=1)
 
-    # 3 options, Yes No "I Dont know" --> 0 and 1's
-    dummy_familyHistory = pd.get_dummies(blr["Do you have a family history of mental illness?"]).drop(["I don't know"],
-                                                                                                      axis=1)
+    # family history
+    new_familyHistory = ["Idk_familyHistory", "No_familyHistory", "Yes_familyHistory"]
+    old_familyHistory = ["I don't know", "No", "Yes"]
+    format(data, "Do you have a family history of mental illness?", new_familyHistory, old_familyHistory)
+    dummy_familyHistory = pd.get_dummies(data["Do you have a family history of mental illness?"]).drop(
+        [new_familyHistory[0]], axis=1)
 
-    dummy_past = pd.get_dummies(blr["Have you had a mental health disorder in the past?"]).drop(["Maybe"], axis=1)
+    # past mental health
+    new_past = ["Maybe_Past", "No_Past", "Yes_Past"]
+    old_past = ["Maybe", "No", "Yes"]
+    format(data, "Have you had a mental health disorder in the past?", new_past, old_past)
+    dummy_past = pd.get_dummies(data["Have you had a mental health disorder in the past?"]).drop([new_past[0]], axis=1)
+
+    # countries
+    dummy_countres = pd.get_dummies(data["What country do you work in?"]).drop("United Kingdom", axis=1)
 
     # Input x variables, y variable
-    X = pd.concat([blr[["What is your age?"]], dummy_familyHistory, dummy_genders, dummy_past], axis=1)
-    y = blr['Have you been diagnosed with a mental health condition by a medical professional?']
+    X = pd.concat([dummy_familyHistory, dummy_genders, dummy_past, dummy_countres], axis=1)
+    # X = pd.concat([dummy_familyHistory , dummy_genders, dummy_countres], axis=1)
+    y = data['Have you been diagnosed with a mental health condition by a medical professional?']
 
     # Divide the data to training set and test set
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=1234)
 
-    # Create an instance and fit the model
+    # https://towardsdatascience.com/logistic-regression-using-python-sklearn-numpy-mnist-handwriting-recognition-matplotlib-a6b31e2b166a
     lr_model = LogisticRegression()
 
     y_train = y_train.astype('int')
+    y_test = y_test.astype('int')
     lr_model.fit(X_train, y_train)
 
-    # Making predictions
     y_pred_sk = lr_model.predict(X_test)
-
-    # Accuracy
-    y_test = y_test.astype('int')
 
     # Shows the accuracy by showing True positive/negativein respect of false positive/negative
     confusionMatrix = metrics.confusion_matrix(y_test, y_pred_sk)
     plt.figure(figsize=(5, 5))
-    sns.heatmap(confusionMatrix, annot=True, fmt=".3f", linewidths=.5, square=True, cmap='Blues_r')
+    sns.heatmap(confusionMatrix, annot=True, fmt=".3f", linewidths=.5, square=True, cmap='Blues_r');
     plt.ylabel('Actual label')
     plt.xlabel('Predicted label')
     all_sample_title = 'Accuracy Score: {0}'.format(lr_model.score(X_test, y_test))
     plt.title(all_sample_title, size=10)
-
+    plt.ion()
     plt.show()

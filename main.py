@@ -44,6 +44,7 @@ class Widget(QtWidgets.QWidget):
         #### Present insights and summaries from data analysis section ####
         # Section to display graphs
         mainGrid = QtWidgets.QGridLayout()
+        mainGrid.setColumnMinimumWidth(0, 100)
 
         # first grid sec
         firstGrid = QtWidgets.QGridLayout()
@@ -57,7 +58,6 @@ class Widget(QtWidgets.QWidget):
         secGrid = QtWidgets.QGridLayout()
         secGrid.setContentsMargins(0, 15, 10, 0)
         # secGrid.setRowStretch(3, 1)
-
 
         vLayout.addLayout(mainGrid)
         mainGrid.addLayout(firstGrid, 0, 0)
@@ -110,6 +110,15 @@ class Widget(QtWidgets.QWidget):
         firstGridR.addWidget(self.displaybtnHeat, 0, 1)
 
 
+        #heatmap correlation
+        corrHeat = QtWidgets.QLabel("Overall Correlation:")
+        self.corrBtn = QtWidgets.QPushButton("Display", self)
+        self.corrBtn.setFixedSize(80, 25)
+        self.corrBtn.clicked.connect(self.overallHeat)
+        firstGridR.addWidget(corrHeat, 1, 0)
+        firstGridR.addWidget(self.corrBtn, 1, 1)
+
+
         # Are current efforts effective and enough?
         # dropdown for selected graph:
         #   - mental health benefits in healthcare coverage
@@ -121,14 +130,44 @@ class Widget(QtWidgets.QWidget):
         self.dropdownEff.setFixedSize(300, 25)
         self.dropdownEff.addItems(["Mental health benefits in healthcare coverage", "Discussed or Conducted mental health events",
                                    "Provide extra mental health resource"])
-        firstGridR.addWidget(effortLabel, 1, 0)
-        firstGridR.addWidget(self.dropdownEff, 2, 0)
+        firstGridR.addWidget(effortLabel, 2, 0)
+        firstGridR.addWidget(self.dropdownEff, 3, 0)
 
         # Efforts
         self.displayBtn8 = QtWidgets.QPushButton("Display", self)
         self.displayBtn8.setFixedSize(80, 25)
         self.displayBtn8.clicked.connect(self.displayGraph8)
-        firstGridR.addWidget(self.displayBtn8, 2, 1)
+        firstGridR.addWidget(self.displayBtn8, 3, 1)
+
+
+
+        # Consequence upon discussing Mental Health Disorders with Employers
+        conseqLabel = QtWidgets.QLabel("Consequence upon discussing Mental Health Disorders \nwith Employers:")
+        conseqLabel.setContentsMargins(0, 20, 0, 0)
+        self.dropdownCon = QtWidgets.QComboBox()
+        self.dropdownCon.setFixedSize(300, 25)
+        self.dropdownCon.addItems(["Employees with No Mental Health Support", "Employees with All Mental Health Support"])
+        firstGridR.addWidget(conseqLabel, 4, 0)
+        firstGridR.addWidget(self.dropdownCon, 5, 0)
+
+        # Consequences
+        self.displayConBtn = QtWidgets.QPushButton("Display", self)
+        self.displayConBtn.setFixedSize(80, 25)
+        self.displayConBtn.clicked.connect(self.displayConsq)
+        firstGridR.addWidget(self.displayConBtn, 5, 1)
+
+
+
+        # Likeliness to Discuss Mental Health, Influenced by Observations/Experiences
+        likeLabel = QtWidgets.QLabel("Likeliness to Discuss Mental Health, Influenced \nby Observations/Experiences:")
+        likeLabel.setContentsMargins(0, 20, 0, 0)
+        self.displayLikeBtn = QtWidgets.QPushButton("Display", self)
+        self.displayLikeBtn.setFixedSize(80, 25)
+        self.displayLikeBtn.setContentsMargins(0, 25, 0, 0)
+        self.displayLikeBtn.clicked.connect(self.infu)
+        firstGridR.addWidget(likeLabel, 6, 0)
+        firstGridR.addWidget(self.displayLikeBtn, 6, 1)
+
 
 
         # Binary Logic Regression
@@ -138,8 +177,9 @@ class Widget(QtWidgets.QWidget):
         self.displayBtn9.setFixedSize(80, 25)
         self.displayBtn9.setContentsMargins(0, 25, 0, 0)
         self.displayBtn9.clicked.connect(self.displayBin)
-        firstGridR.addWidget(binLabel, 3, 0)
-        firstGridR.addWidget(self.displayBtn9, 3, 1)
+        firstGridR.addWidget(binLabel, 7, 0)
+        firstGridR.addWidget(self.displayBtn9, 7, 1)
+
 
 
 
@@ -149,7 +189,6 @@ class Widget(QtWidgets.QWidget):
         # Prone to mental health issue
         groups = QtWidgets.QLabel("What groups are more prone to mental health issues?")
         secGrid.addWidget(groups, 0, 0)
-
 
         # AGE INSIGHT - Prone to mental health issues
         age = QtWidgets.QLabel("a) Age")
@@ -223,6 +262,19 @@ class Widget(QtWidgets.QWidget):
 
 
 
+        # classification report (MIGHT REMOVE)
+        classify = QtWidgets.QLabel("Overall classification:")
+        secGrid.addWidget(classify, 5, 0)
+
+        # location
+        self.overallBtn = QtWidgets.QPushButton("Display", self)
+        self.overallBtn.setFixedSize(80, 25)
+        self.overallBtn.clicked.connect(self.classfiedGraph)
+        secGrid.addWidget(self.overallBtn, 5, 1)
+
+
+
+
 
     ### functions to display graphs ###
     def loadFile(self):
@@ -285,12 +337,35 @@ class Widget(QtWidgets.QWidget):
         content = self.dropdownEff.currentText()
         graphs.effort(df, content)
 
+    def displayConsq(self):
+        df = pd.read_csv('data/mental-heath.csv')
+        cleaning.clean(df)
+        content = self.dropdownCon.currentText()
+        graphs.conseq(df, content)
+
+
+    def infu(self):
+        df = pd.read_csv('data/mental-heath.csv')
+        cleaning.clean(df)
+        graphs.likeInf(df)
 
     def displayBin(self):
         df = pd.read_csv('data/mental-heath.csv')
         cleaning.clean(df)
         graphs.binaryLog(df)
 
+
+    ############(GOT ISSUES)
+    def classfiedGraph(self):
+        df = pd.read_csv('data/mental-heath.csv')
+        cleaning.clean(df)
+        graphs.classfied(df)
+    ######################
+
+    def overallHeat(self):
+        df = pd.read_csv('data/mental-heath.csv')
+        cleaning.clean(df)
+        graphs.correlationHeat(df)
 
 if __name__ == "__main__":
     import sys

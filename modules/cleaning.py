@@ -1,7 +1,6 @@
 
-
 import pandas as pd
-
+import numpy as np
 # remove columns that are not needed
 
 def clean(data):
@@ -75,3 +74,6 @@ def clean(data):
     return data
 
 
+    removeCont = ['Vietname', 'Venezuela', 'United Arab Emirates', 'Turkey', 'Switzerland', 'Sweden', 'Spain', 'South Afraica', 'Slovakia',
+                  'Serbia', 'Russia' 'Romania', 'Poland', 'Pakistan', 'Other', 'Norway', 'New Zealand', 'Netherlands', 'Mexico', 'Lithuania'
+                  , 'Japan', 'Italy', 'Israel', ]

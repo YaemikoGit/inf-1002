@@ -389,7 +389,6 @@ def correlationHeat(data):
     # https://blog.knoldus.com/how-to-find-correlation-value-of-categorical-variables/
 
     categorical_features = identify_nominal_columns(data)
-    print('ok')
     # Make a copy to prevent changes to original
     columns_to_copy = ['What is your gender?',
                        'Have you been diagnosed with a mental health condition by a medical professional?',
@@ -397,9 +396,11 @@ def correlationHeat(data):
                        'What country do you work in?', 'Have you had a mental health disorder in the past?',
                        ]
     blr = data[columns_to_copy].copy(deep=True)
+
     # Keeping countries UK and USA
     blr = blr.drop(blr[(blr['What country do you work in?'] != 'United Kingdom') & (
                 blr['What country do you work in?'] != 'United States of America')].index)
+    # Plotting the correlation heatmap using dython library
     associations(blr, figsize=(10, 10))
 
 
@@ -418,7 +419,7 @@ def ageGroup(data, type):
     age_group_8 = '53-57'
     age_group_9 = '58-60'
 
-    data['What is your age?'] = pd.cut(data['What is your age?'], bins=[18, 22, 27, 32, 37, 42,47,52,57,60], labels=[age_group_1, age_group_2, age_group_3, age_group_4, age_group_5, age_group_6,age_group_7,age_group_8,age_group_9])
+    data['What is your age?'] = pd.cut(data['What is your age?'], bins=[18, 22, 27, 32, 37, 42, 47, 52, 57, 60], labels=[age_group_1, age_group_2, age_group_3, age_group_4, age_group_5, age_group_6,age_group_7,age_group_8,age_group_9])
 
     # variable to store age_group
     age_group = data['What is your age?']
@@ -449,7 +450,7 @@ def ageGroup(data, type):
     diagnosed_age_group = [age_group1_yes, age_group2_yes, age_group3_yes, age_group4_yes, age_group5_yes,
                            age_group6_yes, age_group7_yes, age_group8_yes, age_group9_yes]
     not_diagnosed_age_group = [age_group1_no, age_group2_no, age_group3_no, age_group4_no, age_group5_no, age_group6_no,
-                               age_group7_no, age_group8_yes, age_group9_yes]
+                               age_group7_no, age_group8_no, age_group9_no]
 
     age_group_list = [age_group_1, age_group_2, age_group_3, age_group_4, age_group_5, age_group_6, age_group_7,
                        age_group_8, age_group_9]

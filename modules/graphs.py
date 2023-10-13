@@ -152,7 +152,7 @@ def plot_piechart(x_label,diagnosed_response,not_diagnosed_response,cat):
       col = i % num_columns
       ax = axs[row][col]
       #plotting the pie chart with the diagnosed and not diagnosed responses
-      ax.pie([diagnosed_response[i],not_diagnosed_response[i]], labels=labels, autopct='%1.1f%%', colors=colors,startangle=90)
+      ax.pie([diagnosed_response[i],not_diagnosed_response[i]], labels=labels, autopct='%1.2f%%', colors=colors,startangle=90)
       #determine the title text of each pie chart depending on the given category
       if cat=='age group':
         title_text=('Percentage of Respondents of Age Group %s With\n Diagnosed Mental Health Disorder'%x_label[i])
@@ -395,20 +395,12 @@ def correlationHeat(data):
                        'Have you been diagnosed with a mental health condition by a medical professional?',
                        'Do you have a family history of mental illness?', 'What is your age?',
                        'What country do you work in?', 'Have you had a mental health disorder in the past?',
-                       'What is your age?']
+                       ]
     blr = data[columns_to_copy].copy(deep=True)
-    print('ok1')
     # Keeping countries UK and USA
     blr = blr.drop(blr[(blr['What country do you work in?'] != 'United Kingdom') & (
                 blr['What country do you work in?'] != 'United States of America')].index)
-    print('ok2')
-
-
-
-    complete_correlation = associations(blr, filename='complete_correlation.png', figsize=(10, 10))
-    sns.heatmap(pd.crosstab(complete_correlation))
-    print('ok3')
-    df_complete_corr = complete_correlation['corr']
+    associations(blr, figsize=(10, 10))
 
 
 # What groups are more prone to mental health issues?

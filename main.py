@@ -112,13 +112,13 @@ class Widget(QtWidgets.QWidget):
         #uses firstGridR
 
 
-        # #heatmap correlation
-        # corrHeat = QtWidgets.QLabel("Overall Correlation:")
-        # self.corrBtn = QtWidgets.QPushButton("Display", self)
-        # self.corrBtn.setFixedSize(80, 25)
-        # self.corrBtn.clicked.connect(self.overallHeat)
-        # firstGridR.addWidget(corrHeat, 1, 0)
-        # firstGridR.addWidget(self.corrBtn, 1, 1)
+        #heatmap correlation
+        corrHeat = QtWidgets.QLabel("Overall Correlation:")
+        self.corrBtn = QtWidgets.QPushButton("Display", self)
+        self.corrBtn.setFixedSize(80, 25)
+        self.corrBtn.clicked.connect(self.overallHeat)
+        firstGridR.addWidget(corrHeat, 1, 0)
+        firstGridR.addWidget(self.corrBtn, 1, 1)
 
 
         # Are current efforts effective and enough?

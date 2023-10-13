@@ -23,24 +23,23 @@ def percentage_of_diagnosed(x_label,cat,diagnosed_response,not_diagnosed_respons
   #initilize header text variable
   header_text=''
   #determine header text for given categories
-  if cat == 'age group':
-    header_text = 'Age Group'
-  elif cat == 'gender':
-    header_text = 'Gender'
-  elif cat == 'family background':
-    header_text = 'Family History'
-  elif cat == 'location':
-    header_text = 'Countries'
-
+  if cat=='age group':
+    header_text='Age Group'
+  elif cat=='gender':
+    header_text='Gender'
+  elif cat=='family background':
+    header_text='Family History'
+  elif cat=='location':
+    header_text='Countries'
+  elif cat=='personal history':
+    header_text='Personal History'
   #print header for result
   print('%-25s%45s'%(header_text,"Diagnosed with Mental Health Disorder(%)"))
   print('='*70)
-
   #for each of the labels, populate the dictionary, and print it with its corresponding percentage of diagnosed participants,
   for i in range(len(x_label)):
     diagnosed_percentage[x_label[i]]=(diagnosed_response[i]/(diagnosed_response[i]+not_diagnosed_response[i])*100)
     print('%-25s%45.2f'%(x_label[i], diagnosed_percentage[x_label[i]]))
-
   #call the print_max() function with the popuplated dictionary and the given category
   print_max(diagnosed_percentage,cat)
 
@@ -56,9 +55,9 @@ def print_max(dic1, cat):
 
   #determine text to be displayed based on given category
   if cat=='age group':
-    text="Age group %s is most susceptible towards mental health disorder with %2.2f of the participants diagnosed with mental health disorder."%(max_item,dic1[max_item])
+    text="Age group '%s' is most susceptible towards mental health disorder with %2.2f%s of the participants diagnosed with mental health disorder."%(max_item,dic1[max_item],"%")
   elif cat=='gender':
-    text='%s are most susceptible towards mental health disorder with %2.2f of the participants diagnosed with mental health disorder'%(max_item,dic1[max_item])
+    text="'%s' are most susceptible towards mental health disorder with %2.2f%s  of the participants diagnosed with mental health disorder"%(max_item,dic1[max_item],"%")
   elif cat=='family background':
     if max_item=='Yes':
       cat_text='Individuals with family history of mental health disorder'
@@ -66,30 +65,43 @@ def print_max(dic1, cat):
       cat_text='Individuals without family history of mental health disorder'
     elif max_item=='Unknown':
       cat_text='Individuals with unknown family history of mental health disorder'
-    text='%s are most susceptible towards mental health disorder with %2.2f of the participants diagnosed with mental health disorder'%(cat_text,dic1[max_item])
+    text='%s are most susceptible towards mental health disorder with %2.2f%s of the participants diagnosed with mental health disorder'%(cat_text,dic1[max_item],"%")
   elif cat=='location':
-    text='Individuals in %s are most susceptible towards mental health disorder with %2.2f of the participants diagnosed with mental health disorder'%(max_item,dic1[max_item])
+    text='Individuals in %s are most susceptible towards mental health disorder with %2.2f%s of the participants diagnosed with mental health disorder'%(max_item,dic1[max_item],"%")
+  elif cat=='personal history':
+    if max_item=='Yes':
+      cat_text='Individuals with personal history of mental health disorder'
+    elif max_item=='No':
+      cat_text='Individuals without personal history of mental health disorder'
+    elif max_item=='Maybe':
+      cat_text='Individuals with an unsure personal history of mental health disorder'
+    text='%s are most susceptible towards mental health disorder with %2.2f%s of the participants diagnosed with mental health disorder'%(cat_text,dic1[max_item],"%")
+
 
   #print the text as output
   print(text)
+
 
 
 # function to plot bar chart
 #function to plot bar chart for the diagnosed and not diagnosed responses of the given category
 def plot_barchart(x_label,diagnosed_response,not_diagnosed_response,cat):
   #determine the title text and the label text
-  if (cat == 'age group'):
-    title_str = 'age group'
-    x_text = 'Age group'
-  elif (cat == 'gender'):
-    title_str = 'gender'
-    x_text = 'Gender'
-  elif cat == 'family background':
-    title_str = 'family background'
-    x_text = 'Family Background'
-  elif cat == 'location':
-    title_str = 'countries'
-    x_text = 'Countries'
+  if (cat=='age group'):
+    title_str='Age Group'
+    x_text='Age group'
+  elif (cat=='gender'):
+    title_str='Gender'
+    x_text='Gender'
+  elif cat=='family background':
+    title_str='Family History'
+    x_text='Family History of Mental Health Illness'
+  elif cat=='location':
+    title_str='Countries'
+    x_text='Countries'
+  elif cat=='personal history':
+    title_str='Personal History of Mental Health Disorder'
+    x_text='Personal History of Mental Health Disorder'
 
   #create an array of x positions for the bars to be plotted
   x = np.arange(len(x_label))
@@ -101,8 +113,8 @@ def plot_barchart(x_label,diagnosed_response,not_diagnosed_response,cat):
   bar2=plt.bar(x + width/2, not_diagnosed_response, width, label='No',color='#D21F3C')
   # add labels and title
   plt.xlabel(x_text)
-  plt.ylabel('Number of responses')
-  plt.title('Number of Participant with diagnosed mental health disorder of different %s'%title_str)
+  plt.ylabel('Number of Responses')
+  plt.title('Number of Respondents with Diagnosed Mental Health Disorder of Different %s'%title_str)
   # add label to the bars
   plt.bar_label(bar1, labels=diagnosed_response, label_type='edge', fontsize=10, color='black')
   plt.bar_label(bar2, labels=not_diagnosed_response, label_type='edge', fontsize=10, color='black')
@@ -111,8 +123,6 @@ def plot_barchart(x_label,diagnosed_response,not_diagnosed_response,cat):
 
   # add a legend
   plt.legend()
-
-  plt.ion()
 
   # show the plot
   plt.show()
@@ -132,36 +142,37 @@ def plot_piechart(x_label,diagnosed_response,not_diagnosed_response,cat):
   # subplots with the specified number of rows and columns
   fig, axs = plt.subplots(num_rows, num_columns, figsize=(12, 12))
   if num_rows<2:
-
     #making axs a list such that it is iterable
     axs=[axs]
-
   # plotting one piechart for each of the group(labels) specified
   for i in range(len(x_label)):
-
       #determine which row and column to show the plotted graph
       row = i // num_columns
       col = i % num_columns
       ax = axs[row][col]
-
       #plotting the pie chart with the diagnosed and not diagnosed responses
       ax.pie([diagnosed_response[i],not_diagnosed_response[i]], labels=labels, autopct='%1.1f%%', colors=colors,startangle=90)
-
       #determine the title text of each pie chart depending on the given category
       if cat=='age group':
-        title_text=('Number of Participant of age %s with diagnosed \nmental health disorder'%x_label[i])
+        title_text=('Percentage of Respondents of Age Group %s With\n Diagnosed Mental Health Disorder'%x_label[i])
       elif cat=='gender':
-        title_text='Number of %s participant with diagnosed \n mental health disorder'%x_label[i]
+        title_text='Percentage of %s Respondents with Diagnosed \nMental Health disorder'%x_label[i]
       elif cat=='family background':
         if x_label[i]=='Yes':
-          title_text= 'Number of participant with family history that are diagnosed \n with mental health disorder'
+          title_text= 'Percentage of Respondents with Family History that are\n Diagnosed with Mental Health Disorder'
         elif x_label[i]=='No':
-          title_text= 'Number of participant without family history that are diagnosed \n with mental health disorder'
+          title_text= 'Percentage of Respondents without Family History that are\n Diagnosed with Mental Health Disorder'
         else:
-          title_text= 'Number of participant with unknown family history that are diagnosed \n with mental health disorder'
+          title_text= 'Percentage of Respondents with Unknown Family History that are\n Diagnosed with Mental Health Disorder'
       elif cat=='location':
-          title_text='Number of participant in %s that are diagnosed \n with mental health disorder'%x_label[i]
-
+          title_text='Percentage of Respondents in %s that are\n Diagnosed with Mental Health Disorder'%x_label[i]
+      elif cat=='personal history':
+        if x_label[i]=='Yes':
+          title_text= 'Percentage of Respondents with Personal History of Mental\n Health Disorder that are Diagnosed with Mental Health Disorder'
+        elif x_label[i]=='No':
+          title_text= 'Percentage of Respondents without Personal History of Mental\n Health Disorder that are Diagnosed with Mental Health Disorder'
+        else:
+          title_text= 'Percentage of Respondents with an Unsure Personal History of\n Mental Health Disorder that are Diagnosed with Mental Health Disorder'
       #setting the title for each pie chart
       ax.set_title(title_text)
 
@@ -171,13 +182,12 @@ def plot_piechart(x_label,diagnosed_response,not_diagnosed_response,cat):
     fig.delaxes(axs[num_rows-1][1])
 
   plt.tight_layout()
-  plt.ion()
-  plt.show()
+
 
 
 
 #remove label if responses of that particular label is less than 10% of the total
-def remove_insignificant_labels(data,labels,dataframe,total):
+def remove_insignificant_labels(labels,dataframe,total):
     #for appending labels with sample size that are large enough for plotting graph
     new_label=list(labels[:])
     #for printing purposes
@@ -186,22 +196,24 @@ def remove_insignificant_labels(data,labels,dataframe,total):
     removed_count=0
     for i in labels:
       #if responses are less than 10%, remove it from the new label list and add it to the removed_label list for printing purposes
-      if data[dataframe==i].count()[0]/total <0.1:
+      if df[dataframe==i].count()[0]/total <0.1:
         new_label.remove(i)
         removed_label.append(i)
         removed_count+=1
 
     #determine text to display based on the amount of labels removed
-    # if removed_count==1:
-    #   print("'"+removed_label[0]+"'",end='')
-    #   print(' has been removed due to its small sample size')
-    #
-    # elif removed_count>1:
-    #   for j in removed_label:
-    #     print("'"+j+"'", end=', ')
-    #   print(' have been removed due to their small sample size')
+    if removed_count==1:
+      print("'"+removed_label[0]+"'",end='')
+      print(' has been removed due to its small sample size')
+
+    elif removed_count>1:
+      for j in removed_label:
+        print("'"+j+"'", end=', ')
+      print(' have been removed due to their small sample size')
+
 
     return new_label
+
 
 
 

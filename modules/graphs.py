@@ -159,11 +159,11 @@ def plot_piechart(x_label,diagnosed_response,not_diagnosed_response,cat):
         title_text='Percentage of %s Respondents with Diagnosed \nMental Health disorder'%x_label[i]
       elif cat=='family background':
         if x_label[i]=='Yes':
-          title_text= 'Percentage of Respondents with Family History that are\n Diagnosed with Mental Health Disorder'
+          title_text= 'Percentage of Respondents with Family History that\n are Diagnosed with Mental Health Disorder'
         elif x_label[i]=='No':
-          title_text= 'Percentage of Respondents without Family History that are\n Diagnosed with Mental Health Disorder'
+          title_text= 'Percentage of Respondents without Family History that\n are Diagnosed with Mental Health Disorder'
         else:
-          title_text= 'Percentage of Respondents with Unknown Family History that are\n Diagnosed with Mental Health Disorder'
+          title_text= 'Percentage of Respondents with Unknown Family History that\n are Diagnosed with Mental Health Disorder'
       elif cat=='location':
           title_text='Percentage of Respondents in %s that are\n Diagnosed with Mental Health Disorder'%x_label[i]
       elif cat=='personal history':

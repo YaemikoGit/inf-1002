@@ -79,7 +79,7 @@ def print_max(dic1, cat):
 
 
   #print the text as output
-  print(text)
+  #print(text)
 
 
 
@@ -114,7 +114,7 @@ def plot_barchart(x_label,diagnosed_response,not_diagnosed_response,cat):
   # add labels and title
   plt.xlabel(x_text)
   plt.ylabel('Number of Responses')
-  plt.title('Number of Respondents with Diagnosed Mental Health Disorder of Different %s'%title_str)
+  plt.title('Number of Respondents with Diagnosed Mental Health Disorder \nof Different %s'%title_str)
   # add label to the bars
   plt.bar_label(bar1, labels=diagnosed_response, label_type='edge', fontsize=10, color='black')
   plt.bar_label(bar2, labels=not_diagnosed_response, label_type='edge', fontsize=10, color='black')
@@ -125,6 +125,7 @@ def plot_barchart(x_label,diagnosed_response,not_diagnosed_response,cat):
   plt.legend()
 
   # show the plot
+  plt.ion()
   plt.show()
 
 
@@ -182,6 +183,7 @@ def plot_piechart(x_label,diagnosed_response,not_diagnosed_response,cat):
     fig.delaxes(axs[num_rows-1][1])
 
   plt.tight_layout()
+  plt.ion()
 
 
 
@@ -202,14 +204,14 @@ def remove_insignificant_labels(data, labels,dataframe,total):
         removed_count+=1
 
     #determine text to display based on the amount of labels removed
-    if removed_count==1:
-      print("'"+removed_label[0]+"'",end='')
-      print(' has been removed due to its small sample size')
-
-    elif removed_count>1:
-      for j in removed_label:
-        print("'"+j+"'", end=', ')
-      print(' have been removed due to their small sample size')
+    # if removed_count==1:
+    #   print("'"+removed_label[0]+"'",end='')
+    #   print(' has been removed due to its small sample size')
+    #
+    # elif removed_count>1:
+    #   for j in removed_label:
+    #     print("'"+j+"'", end=', ')
+    #   print(' have been removed due to their small sample size')
 
 
     return new_label
@@ -330,7 +332,7 @@ def conditions(data):
     labels = ['{0} - {1:1.2f} %'.format(i, j) for i, j in zip(conditions, percent)]
 
     patches, texts = plt.pie(numbers, colors=colors, startangle=90, radius=1.2)
-    plt.legend(patches, labels, loc='center right', bbox_to_anchor=(0.5, 0.5), fontsize=8)
+    plt.legend(patches, labels, loc='center', bbox_to_anchor=(0.5, 0.5), fontsize=8)
 
     plt.ion()
     plt.show()
@@ -558,6 +560,36 @@ def location(data, type):
     else:
         plot_piechart(location_label,diagnosed_location,not_diagnosed_location,'location')
 
+
+
+# e) Individual
+def indivi(data, type):
+    data['Have you had a mental health disorder in the past?'].unique()
+    is_diagnosed = data['Have you been diagnosed with a mental health condition by a medical professional?']
+
+    have_mental_health_history = data['Have you had a mental health disorder in the past?']
+    # classifying responses based on personal history of mental illness
+    # storing number of responses of different groups of diagnosed and not diagnosed participants with different personal history
+    diagnosed_with_no_mhh = data[(have_mental_health_history == "No") & (is_diagnosed == 'Yes')].count()[0]
+    not_diagnosed_with_no_mhh = data[(have_mental_health_history == 'No') & (is_diagnosed == 'No')].count()[0]
+    diagnosed_with_mhh = data[(have_mental_health_history == 'Yes') & (is_diagnosed == 'Yes')].count()[0]
+    not_diagnosed_with_mhh = data[(have_mental_health_history == 'Yes') & (is_diagnosed == 'No')].count()[0]
+    diagnosed_with_unknown_mhh = data[(have_mental_health_history == "Maybe") & (is_diagnosed == 'Yes')].count()[0]
+    not_diagnosed_with_unknown_mhh = data[(have_mental_health_history == "Maybe") & (is_diagnosed == 'No')].count()[0]
+
+    # the list is stored in a pattern of with mental health disorder history, with mental unknown health disorder history, and with no mental health disorder historythis follows df.unique of this particular df
+    diagnosed_group = [diagnosed_with_mhh, diagnosed_with_unknown_mhh, diagnosed_with_no_mhh]
+    not_diagnosed_group = [not_diagnosed_with_mhh, not_diagnosed_with_unknown_mhh, not_diagnosed_with_no_mhh]
+
+    # storing labels for graph plotting and analysis purposes
+    mental_health_history_label = data['Have you had a mental health disorder in the past?'].unique()
+
+    if type == 'Bar graph':
+        # plotting bar chart for different groups of personal history of mental health disorder
+        plot_barchart(mental_health_history_label, diagnosed_group, not_diagnosed_group, 'personal history')
+    else:
+        # plot pie chart for respective groups of different perosnal history of mental health disorder
+        plot_piechart(mental_health_history_label, diagnosed_group, not_diagnosed_group, 'personal history')
 
 
 # classified them tgt (might renove)
@@ -836,7 +868,7 @@ def likeInf(data):
         influ.bar_label(c, labels=labels, label_type='center')
 
     # # title of stacked bar chart
-    plt.title('Likeliness to Discuss Mental Health, Influenced by Observations/Experiences')
+    plt.title('Likeliness to Discuss Mental Health, \nInfluenced by Observations/Experiences')
     plt.ion()
     plt.show()
 

@@ -260,6 +260,24 @@ class Widget(QtWidgets.QWidget):
 
 
 
+        # INDIVIDUAL INSIGHT
+        individual = QtWidgets.QLabel("e) Individual's Mental Health History")
+        secGrid.addWidget(individual, 5, 0)
+
+        # dropdown for selected graph for location
+        self.dropdownIn = QtWidgets.QComboBox()
+        self.dropdownIn.setFixedSize(150, 25)
+        self.dropdownIn.addItems(["Bar graph", "Pie chart"])
+        secGrid.addWidget(self.dropdownIn, 5, 1)
+
+        # location
+        self.displayIndiBtn = QtWidgets.QPushButton("Display", self)
+        self.displayIndiBtn.setFixedSize(80, 25)
+        self.displayIndiBtn.clicked.connect(self.displayIndividual)
+        secGrid.addWidget(self.displayIndiBtn, 5, 2)
+
+
+
         # # classification report (MIGHT REMOVE)
         # classify = QtWidgets.QLabel("Overall classification:")
         # secGrid.addWidget(classify, 5, 0)
@@ -328,6 +346,13 @@ class Widget(QtWidgets.QWidget):
         cleaning.clean(df)
         content = self.dropdownLoc.currentText()
         graphs.location(df, content)
+
+
+    def displayIndividual(self):
+        df = pd.read_csv('data/mental-heath.csv')
+        cleaning.clean(df)
+        content = self.dropdownIn.currentText()
+        graphs.indivi(df, content)
 
     def displayGraph8(self):
         df = pd.read_csv('data/mental-heath.csv')

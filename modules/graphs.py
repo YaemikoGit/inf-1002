@@ -922,13 +922,6 @@ def classfied(data):
     y_test = y_test.astype('int')
     lr_model.fit(X_train, y_train)
     y_pred_sk = lr_model.predict(X_test)
-    #
-    #
-    #
-    # y_train = y_train
-    # y_test = y_test
-    # lr_model.fit(X_train, y_train)
-    # y_pred_sk = lr_model.predict(X_test)
 
     print(classification_report(y_test, y_pred_sk))
 

@@ -900,15 +900,17 @@ def classfied(data):
 
     # countries
     dummy_country = pd.get_dummies(blr["What country do you work in?"]).drop("United Kingdom",  axis=1)
-    print('next\n')
-    print(dummy_country)
+
 
     # Input x variables, y variable x now has 1034, y has 1433
-    X = pd.concat([dummy_familyHistory, dummy_genders, dummy_past, dummy_country], axis=1)
-    y = blr['Have you been diagnosed with a mental health condition by a medical professional?']
-
-    print(X)
+    X = pd.concat([dummy_familyHistory, dummy_genders, dummy_past, dummy_country,blr['Have you been diagnosed with a mental health condition by a medical professional?']], axis=1)
+    X=X.dropna()
+    y = X['Have you been diagnosed with a mental health condition by a medical professional?']
     print(y)
+    X= X.drop("Have you been diagnosed with a mental health condition by a medical professional?",axis=1)
+    print(X)
+
+
 
 
     # Divide the data to training set and test set
@@ -919,15 +921,14 @@ def classfied(data):
     y_train = y_train.astype('int')
     y_test = y_test.astype('int')
     lr_model.fit(X_train, y_train)
-
     y_pred_sk = lr_model.predict(X_test)
-
-
-
-    y_train = y_train
-    y_test = y_test
-    lr_model.fit(X_train, y_train)
-    y_pred_sk = lr_model.predict(X_test)
+    #
+    #
+    #
+    # y_train = y_train
+    # y_test = y_test
+    # lr_model.fit(X_train, y_train)
+    # y_pred_sk = lr_model.predict(X_test)
 
     print(classification_report(y_test, y_pred_sk))
 

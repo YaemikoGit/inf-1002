@@ -872,7 +872,7 @@ def classfied(data):
     # Keeping countries UK and USA
     blr = blr.drop(blr[(blr['What country do you work in?'] != 'United Kingdom') & (blr['What country do you work in?'] != 'United States of America')].index)
 
-    print(blr['What country do you work in?'])
+    #print(blr['What country do you work in?'])
 
     # formatting the categorical values:
     def format(blr, text, newList, oldList):
@@ -906,9 +906,7 @@ def classfied(data):
     X = pd.concat([dummy_familyHistory, dummy_genders, dummy_past, dummy_country,blr['Have you been diagnosed with a mental health condition by a medical professional?']], axis=1)
     X=X.dropna()
     y = X['Have you been diagnosed with a mental health condition by a medical professional?']
-    print(y)
     X= X.drop("Have you been diagnosed with a mental health condition by a medical professional?",axis=1)
-    print(X)
 
 
 
@@ -923,11 +921,10 @@ def classfied(data):
     lr_model.fit(X_train, y_train)
     y_pred_sk = lr_model.predict(X_test)
 
-    print(classification_report(y_test, y_pred_sk))
+    #print(classification_report(y_test, y_pred_sk))
 
     importance = lr_model.coef_.flatten()
     #print(importance)
-    print('ok3')
     # Shows the impact of each coefficient
     plt.rcParams["figure.figsize"] = (10, 10)
     plt.barh(X.columns, importance)

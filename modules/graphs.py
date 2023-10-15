@@ -383,7 +383,7 @@ def heatmap(data):
     plt.show()
 
 
-# ERRORS
+# Overall correlation
 def correlationHeat(data):
     # https://medium.com/@knoldus/how-to-find-correlation-value-of-categorical-variables-23de7e7a9e26
     # https://blog.knoldus.com/how-to-find-correlation-value-of-categorical-variables/
@@ -582,8 +582,6 @@ def indivi(data, type):
     else:
         # plot pie chart for respective groups of different perosnal history of mental health disorder
         plot_piechart(mental_health_history_label, diagnosed_group, not_diagnosed_group, 'personal history')
-
-
 
 
 
@@ -851,6 +849,7 @@ def binaryLog(data):
     plt.xlabel('Predicted label')
     all_sample_title = 'Accuracy Score: {0}'.format(lr_model.score(X_test, y_test))
     plt.title(all_sample_title, size=10)
+    plt.title('Prediction of whether certain factors determine mental illness')
     plt.ion()
     plt.show()
 

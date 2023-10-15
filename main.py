@@ -17,7 +17,7 @@ class Widget(QtWidgets.QWidget):
     def __init__(self, parent=None):
         QtWidgets.QWidget.__init__(self, parent=None)
         self.setWindowTitle('INF-1002 Mental Health System')
-        self.setMinimumSize(1000,800)
+        self.setMinimumSize(1000,950)
         vLayout = QtWidgets.QVBoxLayout(self)
         hLayout = QtWidgets.QHBoxLayout()
 
@@ -85,7 +85,7 @@ class Widget(QtWidgets.QWidget):
         firstGrid.addWidget(self.displayBtn2, 1, 1)
 
         #Work time affected by health
-        workAff = QtWidgets.QLabel("Work time affected by heath:")
+        workAff = QtWidgets.QLabel("Work time affected by mental health:")
         self.displayBtn3 = QtWidgets.QPushButton("Display", self)
         self.displayBtn3.setFixedSize(80, 25)
         self.displayBtn3.clicked.connect(self.displayGraph3)
@@ -104,21 +104,19 @@ class Widget(QtWidgets.QWidget):
         firstGrid.addWidget(self.displaybtnHeat, 3, 1)
 
 
+        # heatmap correlation
+        corrHeat = QtWidgets.QLabel("Overall Correlation:")
+        self.corrBtn = QtWidgets.QPushButton("Display", self)
+        self.corrBtn.setFixedSize(80, 25)
+        self.corrBtn.clicked.connect(self.overallHeat)
+        firstGrid.addWidget(corrHeat, 4, 0)
+        firstGrid.addWidget(self.corrBtn, 4, 1)
+
 
 
 
 
         #uses firstGridR
-
-
-        #heatmap correlation
-        corrHeat = QtWidgets.QLabel("Overall Correlation:")
-        self.corrBtn = QtWidgets.QPushButton("Display", self)
-        self.corrBtn.setFixedSize(80, 25)
-        self.corrBtn.clicked.connect(self.overallHeat)
-        firstGridR.addWidget(corrHeat, 1, 0)
-        firstGridR.addWidget(self.corrBtn, 1, 1)
-
 
         # Are current efforts effective and enough?
         effortLabel = QtWidgets.QLabel("Are current efforts effective and enough?")
@@ -127,14 +125,14 @@ class Widget(QtWidgets.QWidget):
         self.dropdownEff.setFixedSize(300, 25)
         self.dropdownEff.addItems(["Mental health benefits in healthcare coverage", "Discussed or Conducted mental health events",
                                    "Provide extra mental health resource"])
-        firstGridR.addWidget(effortLabel, 2, 0)
-        firstGridR.addWidget(self.dropdownEff, 3, 0)
+        firstGridR.addWidget(effortLabel, 1, 0)
+        firstGridR.addWidget(self.dropdownEff, 2, 0)
 
         # Efforts
         self.displayBtn8 = QtWidgets.QPushButton("Display", self)
         self.displayBtn8.setFixedSize(80, 25)
         self.displayBtn8.clicked.connect(self.displayGraph8)
-        firstGridR.addWidget(self.displayBtn8, 3, 1)
+        firstGridR.addWidget(self.displayBtn8, 2, 1)
 
 
 
@@ -144,14 +142,14 @@ class Widget(QtWidgets.QWidget):
         self.dropdownCon = QtWidgets.QComboBox()
         self.dropdownCon.setFixedSize(300, 25)
         self.dropdownCon.addItems(["Employees with No Mental Health Support", "Employees with All Mental Health Support"])
-        firstGridR.addWidget(conseqLabel, 4, 0)
-        firstGridR.addWidget(self.dropdownCon, 5, 0)
+        firstGridR.addWidget(conseqLabel, 3, 0)
+        firstGridR.addWidget(self.dropdownCon, 4, 0)
 
         # Consequences
         self.displayConBtn = QtWidgets.QPushButton("Display", self)
         self.displayConBtn.setFixedSize(80, 25)
         self.displayConBtn.clicked.connect(self.displayConsq)
-        firstGridR.addWidget(self.displayConBtn, 5, 1)
+        firstGridR.addWidget(self.displayConBtn, 4, 1)
 
 
 
@@ -162,8 +160,8 @@ class Widget(QtWidgets.QWidget):
         self.displayLikeBtn.setFixedSize(80, 25)
         self.displayLikeBtn.setContentsMargins(0, 25, 0, 0)
         self.displayLikeBtn.clicked.connect(self.infu)
-        firstGridR.addWidget(likeLabel, 6, 0)
-        firstGridR.addWidget(self.displayLikeBtn, 6, 1)
+        firstGridR.addWidget(likeLabel, 5, 0)
+        firstGridR.addWidget(self.displayLikeBtn, 5, 1)
 
 
 
@@ -174,8 +172,8 @@ class Widget(QtWidgets.QWidget):
         self.displayBtn9.setFixedSize(80, 25)
         self.displayBtn9.setContentsMargins(0, 25, 0, 0)
         self.displayBtn9.clicked.connect(self.displayBin)
-        firstGridR.addWidget(binLabel, 7, 0)
-        firstGridR.addWidget(self.displayBtn9, 7, 1)
+        firstGridR.addWidget(binLabel, 6, 0)
+        firstGridR.addWidget(self.displayBtn9, 6, 1)
 
 
 

@@ -84,6 +84,7 @@ class Widget(QtWidgets.QWidget):
         firstGrid.addWidget(conditionsLabel, 1, 0)
         firstGrid.addWidget(self.displayBtn2, 1, 1)
 
+
         #Work time affected by health
         workAff = QtWidgets.QLabel("Work time affected by mental health:")
         self.displayBtn3 = QtWidgets.QPushButton("Display", self)
@@ -177,6 +178,15 @@ class Widget(QtWidgets.QWidget):
 
 
 
+        #How do employees feel about discussing mental health issues?
+        reactLabel = QtWidgets.QLabel("How do employees feel about \ndiscussing mental health issues?")
+        reactLabel.setContentsMargins(0, 20, 0, 0)
+        self.displayBtn9 = QtWidgets.QPushButton("Display", self)
+        self.displayBtn9.setFixedSize(80, 25)
+        self.displayBtn9.setContentsMargins(0, 25, 0, 0)
+        self.displayBtn9.clicked.connect(self.displayReact)
+        firstGridR.addWidget(reactLabel, 7, 0)
+        firstGridR.addWidget(self.displayBtn9, 7, 1)
 
 
 
@@ -275,7 +285,7 @@ class Widget(QtWidgets.QWidget):
 
 
 
-        # classification report (MIGHT REMOVE)
+        # classification report
         classify = QtWidgets.QLabel("Overall classification:")
         secGrid.addWidget(classify, 6, 0)
 
@@ -284,6 +294,7 @@ class Widget(QtWidgets.QWidget):
         self.overallBtn.setFixedSize(80, 25)
         self.overallBtn.clicked.connect(self.classfiedGraph)
         secGrid.addWidget(self.overallBtn, 6, 1)
+
 
 
 
@@ -375,7 +386,6 @@ class Widget(QtWidgets.QWidget):
         graphs.binaryLog(df)
 
 
-    #(GOT ISSUES)
     def classfiedGraph(self):
         df = pd.read_csv('data/mental-heath.csv')
         cleaning.clean(df)
@@ -385,6 +395,13 @@ class Widget(QtWidgets.QWidget):
         df = pd.read_csv('data/mental-heath.csv')
         cleaning.clean(df)
         graphs.correlationHeat(df)
+
+
+    def displayReact(self):
+        df = pd.read_csv('data/mental-heath.csv')
+        cleaning.clean(df)
+        graphs.reaction(df)
+
 
 if __name__ == "__main__":
     import sys

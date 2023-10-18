@@ -931,3 +931,27 @@ def classfied(data):
     plt.xlabel("score")
     plt.ion()
     plt.show()
+
+
+
+#How do employees feel about discussing mental health issues?
+def reaction(data):
+    # Get the data
+    consequence_nums = data['Do you think that discussing a mental health disorder with your employer would have negative consequences?'].value_counts()
+
+    # Draw the pie chart
+
+    # Get the label and values
+    labels = consequence_nums.index
+    values = consequence_nums.values
+    total = sum(values)
+
+    # Create the labels
+    labels = [f'{label} - {value / total * 100:0.2f}%' for label, value in zip(labels, values)]
+
+    # Plot the data
+    patches = plt.pie(consequence_nums, labels=labels)
+    plt.legend(patches, labels=consequence_nums.index, loc='center-right', bbox_to_anchor=(1.5, 1.0), fontsize=8)
+    plt.title('Do you think that discussing a mental health disorder \nwith your employer would have negative consequences?')
+    plt.ion()
+    plt.show()
